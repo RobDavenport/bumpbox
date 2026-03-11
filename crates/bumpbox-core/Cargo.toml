@@ -1,0 +1,19 @@
+[package]
+name = "bumpbox-core"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Deterministic no_std fixed-point 2D geometry and query kernel walking skeleton"
+
+[features]
+default = []
+alloc = []
+serde = []
+std = ["alloc"]
+
+[dependencies]
+fixed = { version = "1", default-features = false }
+
+[lib]
+name = "bumpbox_core"
+path = "src/lib.rs"

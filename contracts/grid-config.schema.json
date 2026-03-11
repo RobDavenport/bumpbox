@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Bumpbox Grid Config",
+  "type": "object",
+  "required": [
+    "width",
+    "height",
+    "cell_size",
+    "max_per_cell"
+  ],
+  "properties": {
+    "width": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "cell_size": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "max_per_cell": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "additionalProperties": false
+}

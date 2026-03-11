@@ -1,0 +1,19 @@
+{
+  "cases": [
+    {
+      "name": "",
+      "kind": "raycast_aabb",
+      "aabb": {
+        "min": [
+          0,
+          0
+        ],
+        "max": [
+          2,
+          2
+        ]
+      },
+      "expected_hit": true
+    }
+  ]
+}

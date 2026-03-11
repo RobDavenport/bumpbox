@@ -1,0 +1,18 @@
+[package]
+name = "bumpbox-grid"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Deterministic no_std uniform-grid broadphase companion for bumpbox-core"
+
+[features]
+default = []
+alloc = []
+std = ["alloc"]
+
+[dependencies]
+bumpbox-core = { path = "../bumpbox-core" }
+
+[lib]
+name = "bumpbox_grid"
+path = "src/lib.rs"

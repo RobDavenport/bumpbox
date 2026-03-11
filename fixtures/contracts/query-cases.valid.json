@@ -1,0 +1,48 @@
+{
+  "cases": [
+    {
+      "name": "inside_point",
+      "kind": "point_in_aabb",
+      "aabb": {
+        "min": [
+          0,
+          0
+        ],
+        "max": [
+          2,
+          2
+        ]
+      },
+      "point": [
+        1,
+        1
+      ],
+      "expected_contains": true
+    },
+    {
+      "name": "ray_hits_box",
+      "kind": "raycast_aabb",
+      "aabb": {
+        "min": [
+          0,
+          0
+        ],
+        "max": [
+          2,
+          2
+        ]
+      },
+      "ray": {
+        "origin": [
+          -1,
+          1
+        ],
+        "dir": [
+          1,
+          0
+        ]
+      },
+      "expected_hit": true
+    }
+  ]
+}

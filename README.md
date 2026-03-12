@@ -2,6 +2,8 @@
 
 Deterministic, `no_std`-compatible fixed-point geometry and collision queries with 2D and 3D broadphase support, plus a browser-facing wasm demo.
 
+**[Live Demo](https://robdavenport.github.io/bumpbox/)** - open the GitHub Pages showcase in your browser.
+
 ## Workspace
 
 - `crates/bumpbox-core`: fixed-point scalar, 2D and 3D vectors, shapes, and narrow-phase query helpers
@@ -28,6 +30,8 @@ python3 scripts/validate_contract_fixtures.py
 
 ## Wasm demo
 
+The deployed demo is available at `https://robdavenport.github.io/bumpbox/`.
+
 Build the wasm package:
 
 ```bash
@@ -42,6 +46,8 @@ python3 -m http.server 8080
 ```
 
 Open `http://localhost:8080` to see the 2D containment plus AABB/circle/capsule/polygon/oriented-box raycast scene and the 3D sphere/capsule/triangle scene with AABB, sphere, capsule, and triangle ray overlays, a visible static segment-vs-triangle overlap lane, visible baseline, skew, and vertex/edge sphere-vs-triangle guidance lanes plus baseline and skew capsule-vs-triangle guidance lanes, a visible triangle-vs-AABB closest-pair guidance lane, visible segment-vs-triangle and triangle-vs-triangle closest-pair guidance lanes, a visible triangle-vs-triangle overlap lane, visible sphere-to-triangle, segment-to-triangle, capsule-to-triangle, and triangle-to-triangle sweep lanes, and triangle closest-point guidance.
+
+The GitHub Pages deployment workflow lives in `.github/workflows/pages.yml`.
 
 ## Common commands
 

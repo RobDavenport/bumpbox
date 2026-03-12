@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/bumpbox-core", "crates/bumpbox-grid"]
+members = ["crates/bumpbox-core", "crates/bumpbox-grid", "demo-wasm"]
 resolver = "2"
 
 [workspace.package]

@@ -17,6 +17,10 @@
       "type": "integer",
       "minimum": 1
     },
+    "depth": {
+      "type": "integer",
+      "minimum": 1
+    },
     "cell_size": {
       "type": "integer",
       "minimum": 1

@@ -13,8 +13,7 @@
         "type": "object",
         "required": [
           "name",
-          "kind",
-          "aabb"
+          "kind"
         ],
         "properties": {
           "name": {
@@ -25,7 +24,93 @@
             "type": "string",
             "enum": [
               "point_in_aabb",
-              "raycast_aabb"
+              "closest_point_segment",
+              "distance_squared_point_segment",
+              "closest_point_circle",
+              "distance_squared_point_circle",
+              "closest_point_capsule",
+              "distance_squared_point_capsule",
+              "closest_point_polygon",
+              "distance_squared_point_polygon",
+              "closest_point_oriented_box",
+              "distance_squared_point_oriented_box",
+              "raycast_aabb",
+              "raycast_circle",
+              "raycast_capsule",
+              "raycast_polygon",
+              "raycast_oriented_box",
+              "sweep_circle_aabb",
+              "sweep_circle_capsule",
+              "sweep_circle_segment",
+              "sweep_circle_circle",
+              "sweep_circle_polygon",
+              "sweep_circle_oriented_box",
+              "sweep_capsule_aabb",
+              "sweep_capsule_circle",
+              "sweep_capsule_segment",
+              "sweep_capsule_capsule",
+              "sweep_capsule_polygon",
+              "sweep_capsule_oriented_box",
+              "segment_intersects_segment",
+              "circle_overlaps_segment",
+              "capsule_overlaps_segment",
+              "circle_overlaps_capsule",
+              "circle_overlaps_polygon",
+              "circle_overlaps_oriented_box",
+              "capsule_overlaps_aabb",
+              "capsule_overlaps_capsule",
+              "capsule_overlaps_polygon",
+              "capsule_overlaps_oriented_box",
+              "polygon_overlaps_aabb",
+              "polygon_overlaps_polygon",
+              "oriented_box_overlaps_aabb",
+              "oriented_box_overlaps_oriented_box",
+              "point_in_aabb3",
+              "closest_point_segment3",
+              "distance_squared_point_segment3",
+              "closest_point_sphere",
+              "distance_squared_point_sphere",
+              "closest_point_capsule3",
+              "distance_squared_point_capsule3",
+              "closest_point_triangle3",
+              "distance_squared_point_triangle3",
+              "closest_points_segment3_triangle3",
+              "distance_squared_segment3_triangle3",
+              "closest_points_sphere_triangle3",
+              "distance_squared_sphere_triangle3",
+              "closest_points_capsule3_triangle3",
+              "distance_squared_capsule3_triangle3",
+              "closest_points_triangle3_triangle3",
+              "distance_squared_triangle3_triangle3",
+              "closest_points_triangle3_aabb3",
+              "distance_squared_triangle3_aabb3",
+              "raycast_aabb3",
+              "raycast_sphere",
+              "raycast_capsule3",
+              "raycast_triangle3",
+              "sweep_segment3_aabb3",
+              "sweep_segment3_triangle3",
+              "sweep_triangle3_triangle3",
+              "sweep_sphere_aabb3",
+              "sweep_sphere_capsule3",
+              "sweep_sphere_segment3",
+              "sweep_sphere_sphere",
+              "sweep_sphere_triangle3",
+              "sweep_capsule3_sphere",
+              "sweep_capsule3_triangle3",
+              "sweep_capsule3_aabb3",
+              "sweep_capsule3_segment3",
+              "sweep_capsule3_capsule3",
+              "segment3_overlaps_aabb3",
+              "segment3_overlaps_triangle3",
+              "sphere_overlaps_segment3",
+              "sphere_overlaps_triangle3",
+              "sphere_overlaps_sphere",
+              "capsule3_overlaps_triangle3",
+              "capsule3_overlaps_aabb3",
+              "capsule3_overlaps_capsule3",
+              "triangle3_overlaps_triangle3",
+              "triangle3_overlaps_aabb3"
             ]
           },
           "aabb": {
@@ -54,6 +139,32 @@
             },
             "additionalProperties": false
           },
+          "aabb3": {
+            "type": "object",
+            "required": [
+              "min",
+              "max"
+            ],
+            "properties": {
+              "min": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "max": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              }
+            },
+            "additionalProperties": false
+          },
           "point": {
             "type": "array",
             "items": {
@@ -61,6 +172,14 @@
             },
             "minItems": 2,
             "maxItems": 2
+          },
+          "point3": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 3,
+            "maxItems": 3
           },
           "ray": {
             "type": "object",
@@ -88,14 +207,1890 @@
             },
             "additionalProperties": false
           },
+          "segment": {
+            "type": "object",
+            "required": [
+              "start",
+              "end"
+            ],
+            "properties": {
+              "start": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "end": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              }
+            },
+            "additionalProperties": false
+          },
+          "other_segment": {
+            "$ref": "#/properties/cases/items/properties/segment"
+          },
+          "ray3": {
+            "type": "object",
+            "required": [
+              "origin",
+              "dir"
+            ],
+            "properties": {
+              "origin": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "dir": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              }
+            },
+            "additionalProperties": false
+          },
+          "segment3": {
+            "type": "object",
+            "required": [
+              "start",
+              "end"
+            ],
+            "properties": {
+              "start": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "end": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              }
+            },
+            "additionalProperties": false
+          },
           "expected_contains": {
             "type": "boolean"
           },
+          "expected_closest_point": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "expected_closest_point3": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "expected_segment_point3": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "expected_sphere_point3": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "expected_capsule_point3": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "expected_triangle_point3": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "expected_other_triangle_point3": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "expected_distance_sq": {
+            "type": "integer"
+          },
           "expected_hit": {
             "type": "boolean"
+          },
+          "expected_overlap": {
+            "type": "boolean"
+          },
+          "circle": {
+            "type": "object",
+            "required": [
+              "center",
+              "radius"
+            ],
+            "properties": {
+              "center": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "radius": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          },
+          "other_circle": {
+            "$ref": "#/properties/cases/items/properties/circle"
+          },
+          "capsule": {
+            "type": "object",
+            "required": [
+              "start",
+              "end",
+              "radius"
+            ],
+            "properties": {
+              "start": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "end": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "radius": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          },
+          "other_capsule": {
+            "$ref": "#/properties/cases/items/properties/capsule"
+          },
+          "polygon": {
+            "type": "object",
+            "required": [
+              "points"
+            ],
+            "properties": {
+              "points": {
+                "type": "array",
+                "minItems": 3,
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "other_polygon": {
+            "$ref": "#/properties/cases/items/properties/polygon"
+          },
+          "oriented_box": {
+            "type": "object",
+            "required": [
+              "center",
+              "half_extents",
+              "axis_x",
+              "axis_y"
+            ],
+            "properties": {
+              "center": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "half_extents": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "axis_x": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "axis_y": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              }
+            },
+            "additionalProperties": false
+          },
+          "other_oriented_box": {
+            "$ref": "#/properties/cases/items/properties/oriented_box"
+          },
+          "sphere": {
+            "type": "object",
+            "required": [
+              "center",
+              "radius"
+            ],
+            "properties": {
+              "center": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "radius": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          },
+          "other_sphere": {
+            "$ref": "#/properties/cases/items/properties/sphere"
+          },
+          "capsule3": {
+            "type": "object",
+            "required": [
+              "start",
+              "end",
+              "radius"
+            ],
+            "properties": {
+              "start": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "end": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "radius": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          },
+          "triangle3": {
+            "type": "object",
+            "required": [
+              "a",
+              "b",
+              "c"
+            ],
+            "properties": {
+              "a": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "b": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "c": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              }
+            },
+            "additionalProperties": false
+          },
+          "other_capsule3": {
+            "$ref": "#/properties/cases/items/properties/capsule3"
+          },
+          "other_triangle3": {
+            "$ref": "#/properties/cases/items/properties/triangle3"
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "point_in_aabb"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "aabb",
+                "point",
+                "expected_contains"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "closest_point_segment"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "segment",
+                "point",
+                "expected_closest_point"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "distance_squared_point_segment"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "segment",
+                "point",
+                "expected_distance_sq"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "closest_point_circle"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "circle",
+                "point",
+                "expected_closest_point"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "distance_squared_point_circle"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "circle",
+                "point",
+                "expected_distance_sq"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "closest_point_capsule"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule",
+                "point",
+                "expected_closest_point"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "distance_squared_point_capsule"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule",
+                "point",
+                "expected_distance_sq"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "closest_point_polygon"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "polygon",
+                "point",
+                "expected_closest_point"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "distance_squared_point_polygon"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "polygon",
+                "point",
+                "expected_distance_sq"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "closest_point_oriented_box"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "oriented_box",
+                "point",
+                "expected_closest_point"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "distance_squared_point_oriented_box"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "oriented_box",
+                "point",
+                "expected_distance_sq"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "raycast_aabb"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "aabb",
+                "ray",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "raycast_circle"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "circle",
+                "ray",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "raycast_capsule"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule",
+                "ray",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "raycast_polygon"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "polygon",
+                "ray",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "raycast_oriented_box"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "oriented_box",
+                "ray",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_circle_aabb"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "circle",
+                "aabb",
+                "ray",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_circle_capsule"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "circle",
+                "capsule",
+                "ray",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_circle_segment"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "circle",
+                "segment",
+                "ray",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_circle_circle"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "circle",
+                "other_circle",
+                "ray",
+                "expected_hit"
+              ],
+              "properties": {
+                "other_circle": {
+                  "$ref": "#/properties/cases/items/properties/circle"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_circle_polygon"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "circle",
+                "polygon",
+                "ray",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_circle_oriented_box"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "circle",
+                "oriented_box",
+                "ray",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_capsule_aabb"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule",
+                "aabb",
+                "ray",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_capsule_circle"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule",
+                "circle",
+                "ray",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_capsule_segment"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule",
+                "segment",
+                "ray",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_capsule_capsule"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule",
+                "other_capsule",
+                "ray",
+                "expected_hit"
+              ],
+              "properties": {
+                "other_capsule": {
+                  "$ref": "#/properties/cases/items/properties/capsule"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_capsule_polygon"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule",
+                "polygon",
+                "ray",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_capsule_oriented_box"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule",
+                "oriented_box",
+                "ray",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "point_in_aabb3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "aabb3",
+                "point3",
+                "expected_contains"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "closest_point_segment3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "segment3",
+                "point3",
+                "expected_closest_point3"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "distance_squared_point_segment3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "segment3",
+                "point3",
+                "expected_distance_sq"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "closest_point_sphere"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "sphere",
+                "point3",
+                "expected_closest_point3"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "distance_squared_point_sphere"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "sphere",
+                "point3",
+                "expected_distance_sq"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "closest_point_capsule3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule3",
+                "point3",
+                "expected_closest_point3"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "distance_squared_point_capsule3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule3",
+                "point3",
+                "expected_distance_sq"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "closest_point_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "triangle3",
+                "point3",
+                "expected_closest_point3"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "distance_squared_point_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "triangle3",
+                "point3",
+                "expected_distance_sq"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "closest_points_segment3_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "segment3",
+                "triangle3",
+                "expected_segment_point3",
+                "expected_triangle_point3"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "distance_squared_segment3_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "segment3",
+                "triangle3",
+                "expected_distance_sq"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "closest_points_sphere_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "sphere",
+                "triangle3",
+                "expected_sphere_point3",
+                "expected_triangle_point3"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "distance_squared_sphere_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "sphere",
+                "triangle3",
+                "expected_distance_sq"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "closest_points_capsule3_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule3",
+                "triangle3",
+                "expected_capsule_point3",
+                "expected_triangle_point3"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "distance_squared_capsule3_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule3",
+                "triangle3",
+                "expected_distance_sq"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "closest_points_triangle3_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "triangle3",
+                "other_triangle3",
+                "expected_triangle_point3",
+                "expected_other_triangle_point3"
+              ],
+              "properties": {
+                "other_triangle3": {
+                  "$ref": "#/properties/cases/items/properties/triangle3"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "distance_squared_triangle3_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "triangle3",
+                "other_triangle3",
+                "expected_distance_sq"
+              ],
+              "properties": {
+                "other_triangle3": {
+                  "$ref": "#/properties/cases/items/properties/triangle3"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "closest_points_triangle3_aabb3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "triangle3",
+                "aabb3",
+                "expected_triangle_point3",
+                "expected_aabb_point3"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "distance_squared_triangle3_aabb3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "triangle3",
+                "aabb3",
+                "expected_distance_sq"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "segment_intersects_segment"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "segment",
+                "other_segment",
+                "expected_overlap"
+              ],
+              "properties": {
+                "other_segment": {
+                  "$ref": "#/properties/cases/items/properties/segment"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "circle_overlaps_segment"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "circle",
+                "segment",
+                "expected_overlap"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "capsule_overlaps_segment"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule",
+                "segment",
+                "expected_overlap"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "circle_overlaps_capsule"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "circle",
+                "capsule",
+                "expected_overlap"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "circle_overlaps_polygon"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "circle",
+                "polygon",
+                "expected_overlap"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "circle_overlaps_oriented_box"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "circle",
+                "oriented_box",
+                "expected_overlap"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "capsule_overlaps_aabb"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule",
+                "aabb",
+                "expected_overlap"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "capsule_overlaps_capsule"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule",
+                "other_capsule",
+                "expected_overlap"
+              ],
+              "properties": {
+                "other_capsule": {
+                  "$ref": "#/properties/cases/items/properties/capsule"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "capsule_overlaps_polygon"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule",
+                "polygon",
+                "expected_overlap"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "capsule_overlaps_oriented_box"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule",
+                "oriented_box",
+                "expected_overlap"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "polygon_overlaps_aabb"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "polygon",
+                "aabb",
+                "expected_overlap"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "polygon_overlaps_polygon"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "polygon",
+                "other_polygon",
+                "expected_overlap"
+              ],
+              "properties": {
+                "other_polygon": {
+                  "$ref": "#/properties/cases/items/properties/polygon"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "oriented_box_overlaps_aabb"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "oriented_box",
+                "aabb",
+                "expected_overlap"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "oriented_box_overlaps_oriented_box"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "oriented_box",
+                "other_oriented_box",
+                "expected_overlap"
+              ],
+              "properties": {
+                "other_oriented_box": {
+                  "$ref": "#/properties/cases/items/properties/oriented_box"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "raycast_aabb3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "aabb3",
+                "ray3",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "raycast_sphere"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "sphere",
+                "ray3",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "raycast_capsule3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule3",
+                "ray3",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "raycast_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "triangle3",
+                "ray3",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_segment3_aabb3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "segment3",
+                "aabb3",
+                "ray3",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_segment3_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "segment3",
+                "triangle3",
+                "ray3",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_triangle3_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "triangle3",
+                "other_triangle3",
+                "ray3",
+                "expected_hit"
+              ],
+              "properties": {
+                "other_triangle3": {
+                  "$ref": "#/properties/cases/items/properties/triangle3"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_sphere_aabb3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "sphere",
+                "aabb3",
+                "ray3",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_sphere_capsule3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "sphere",
+                "capsule3",
+                "ray3",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_sphere_segment3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "sphere",
+                "segment3",
+                "ray3",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_sphere_sphere"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "sphere",
+                "other_sphere",
+                "ray3",
+                "expected_hit"
+              ],
+              "properties": {
+                "other_sphere": {
+                  "$ref": "#/properties/cases/items/properties/sphere"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_sphere_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "sphere",
+                "triangle3",
+                "ray3",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_capsule3_sphere"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule3",
+                "sphere",
+                "ray3",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_capsule3_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule3",
+                "triangle3",
+                "ray3",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_capsule3_aabb3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule3",
+                "aabb3",
+                "ray3",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_capsule3_segment3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule3",
+                "segment3",
+                "ray3",
+                "expected_hit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sweep_capsule3_capsule3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule3",
+                "other_capsule3",
+                "ray3",
+                "expected_hit"
+              ],
+              "properties": {
+                "other_capsule3": {
+                  "$ref": "#/properties/cases/items/properties/capsule3"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "segment3_overlaps_aabb3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "segment3",
+                "aabb3",
+                "expected_overlap"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "segment3_overlaps_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "segment3",
+                "triangle3",
+                "expected_overlap"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sphere_overlaps_segment3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "sphere",
+                "segment3",
+                "expected_overlap"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sphere_overlaps_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "sphere",
+                "triangle3",
+                "expected_overlap"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "sphere_overlaps_sphere"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "sphere",
+                "other_sphere",
+                "expected_overlap"
+              ],
+              "properties": {
+                "other_sphere": {
+                  "$ref": "#/properties/cases/items/properties/sphere"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "capsule3_overlaps_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule3",
+                "triangle3",
+                "expected_overlap"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "capsule3_overlaps_aabb3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule3",
+                "aabb3",
+                "expected_overlap"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "capsule3_overlaps_capsule3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "capsule3",
+                "other_capsule3",
+                "expected_overlap"
+              ],
+              "properties": {
+                "other_capsule3": {
+                  "$ref": "#/properties/cases/items/properties/capsule3"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "triangle3_overlaps_triangle3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "triangle3",
+                "other_triangle3",
+                "expected_overlap"
+              ],
+              "properties": {
+                "other_triangle3": {
+                  "$ref": "#/properties/cases/items/properties/triangle3"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "triangle3_overlaps_aabb3"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "triangle3",
+                "aabb3",
+                "expected_overlap"
+              ]
+            }
+          }
+        ]
       }
     }
   },

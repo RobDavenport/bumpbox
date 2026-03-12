@@ -1,4 +1,4 @@
-.PHONY: bootstrap fmt lint test test-no-default docs contracts ci
+.PHONY: bootstrap fmt lint test test-no-default docs contracts ci wasm-demo wasm-demo-serve
 
 bootstrap:
 	python3 --version
@@ -25,3 +25,9 @@ contracts:
 	python3 scripts/validate_contract_fixtures.py
 
 ci: fmt lint test test-no-default docs
+
+wasm-demo:
+	wasm-pack build demo-wasm --target web --release --out-dir www/pkg
+
+wasm-demo-serve:
+	cd demo-wasm/www && python3 -m http.server 8080

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>bumpbox Collision Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-a"></div>
+    <div class="bg-orb orb-b"></div>
+    <div class="bg-grid"></div>
+    <main class="shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Deterministic Geometry Kernel</p>
+          <h1>bumpbox Collision Lab</h1>
+          <p class="lede">
+            Live 2D and 3D wasm scenes driven by the fixed-point query layer and broadphase grids.
+          </p>
+        </div>
+        <div class="hero-status">
+          <p id="wasm-status" class="mono">WASM core: loading...</p>
+          <p id="wasm-detail" class="mono">2D tick=0 | 3D tick=0</p>
+        </div>
+      </header>
+
+      <section class="toolbar card">
+        <div class="toolbar-block">
+          <span class="toolbar-label">Playback</span>
+          <div class="button-row">
+            <button id="play-button" type="button">Play</button>
+            <button id="pause-button" type="button">Pause</button>
+            <button id="reset-button" type="button">Reset</button>
+          </div>
+        </div>
+        <div class="toolbar-block">
+          <label class="toolbar-label" for="speed-range">Speed</label>
+          <input id="speed-range" type="range" min="1" max="4" value="1" />
+          <span id="speed-value" class="mono">1x</span>
+        </div>
+        <div class="toolbar-block">
+          <span class="toolbar-label">Legend</span>
+          <div class="legend">
+            <span><i class="swatch swatch-amber"></i> Dynamic bodies</span>
+            <span><i class="swatch swatch-teal"></i> Query sensors</span>
+            <span><i class="swatch swatch-coral"></i> Collision hits</span>
+            <span><i class="swatch swatch-slate"></i> Static geometry</span>
+            <span><i class="swatch swatch-blue"></i> Polygon rays</span>
+            <span><i class="swatch swatch-violet"></i> OBB rays</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel-grid">
+        <article class="card scene-card">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">2D Scene</p>
+              <h2>Containment + Raycasts</h2>
+            </div>
+            <p id="scene2-summary" class="mono chip">probe idle</p>
+          </div>
+          <canvas id="scene2d" width="640" height="420"></canvas>
+          <div class="stats-grid">
+            <div class="stat-block">
+              <h3>Live Flags</h3>
+              <ul id="scene2-flags" class="stat-list"></ul>
+            </div>
+            <div class="stat-block">
+              <h3>Grid Candidates</h3>
+              <div id="scene2-candidates" class="chip-row"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card scene-card">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">3D Scene</p>
+              <h2>Sphere + Capsule Ray Lab</h2>
+            </div>
+            <p id="scene3-summary" class="mono chip">sphere idle</p>
+          </div>
+          <canvas id="scene3d" width="640" height="420"></canvas>
+          <div class="stats-grid">
+            <div class="stat-block">
+              <h3>Live Flags</h3>
+              <ul id="scene3-flags" class="stat-list"></ul>
+            </div>
+            <div class="stat-block">
+              <h3>Grid Candidates</h3>
+              <div id="scene3-candidates" class="chip-row"></div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="card notes">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">What You're Seeing</p>
+            <h2>Query Surface</h2>
+          </div>
+        </div>
+        <div class="notes-grid">
+          <p>
+            The 2D canvas shows circle-vs-AABB overlap, point containment for capsule, OBB, and
+            convex polygon, explicit AABB/circle/capsule/polygon/OBB raycasts with hit normals,
+            and sorted broadphase candidate IDs.
+          </p>
+          <p>
+            The 3D canvas shows sphere-vs-AABB, sphere-vs-capsule, capsule point containment,
+            explicit AABB3/sphere/capsule raycasts, and deterministic `UniformGrid3` candidate
+            queries rendered with a simple projected wireframe view.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

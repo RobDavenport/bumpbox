@@ -2,15 +2,1628 @@
   "cases": [
     {
       "name": "",
-      "kind": "raycast_aabb",
+      "kind": "capsule3_overlaps_capsule3",
+      "capsule3": {
+        "start": [
+          0,
+          0,
+          0
+        ],
+        "end": [
+          4,
+          0,
+          0
+        ],
+        "radius": 1
+      },
+      "other_capsule3": {
+        "start": [
+          2,
+          3
+        ],
+        "end": [
+          2,
+          3
+        ],
+        "radius": 2
+      }
+    },
+    {
+      "name": "raycast_circle_missing_ray",
+      "kind": "raycast_circle",
+      "circle": {
+        "center": [
+          3,
+          0
+        ],
+        "radius": 2
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "closest_point_segment_missing_expected_closest_point",
+      "kind": "closest_point_segment",
+      "segment": {
+        "start": [
+          0,
+          0
+        ],
+        "end": [
+          4,
+          0
+        ]
+      },
+      "point": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "distance_squared_point_circle_missing_point",
+      "kind": "distance_squared_point_circle",
+      "circle": {
+        "center": [
+          0,
+          0
+        ],
+        "radius": 2
+      },
+      "expected_distance_sq": 9
+    },
+    {
+      "name": "closest_point_polygon_missing_expected_closest_point",
+      "kind": "closest_point_polygon",
+      "polygon": {
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            0
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            0,
+            4
+          ]
+        ]
+      },
+      "point": [
+        6,
+        2
+      ]
+    },
+    {
+      "name": "distance_squared_point_oriented_box_bad_point_arity",
+      "kind": "distance_squared_point_oriented_box",
+      "oriented_box": {
+        "center": [
+          0,
+          0
+        ],
+        "half_extents": [
+          2,
+          1
+        ],
+        "axis_x": [
+          1,
+          0
+        ],
+        "axis_y": [
+          0,
+          1
+        ]
+      },
+      "point": [
+        5,
+        0,
+        0
+      ],
+      "expected_distance_sq": 9
+    },
+    {
+      "name": "closest_point_segment3_bad_point3_arity",
+      "kind": "closest_point_segment3",
+      "segment3": {
+        "start": [
+          0,
+          0,
+          0
+        ],
+        "end": [
+          4,
+          0,
+          0
+        ]
+      },
+      "point3": [
+        2,
+        3
+      ],
+      "expected_closest_point3": [
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "distance_squared_point_capsule3_missing_expected_distance_sq",
+      "kind": "distance_squared_point_capsule3",
+      "capsule3": {
+        "start": [
+          0,
+          0,
+          0
+        ],
+        "end": [
+          4,
+          0,
+          0
+        ],
+        "radius": 1
+      },
+      "point3": [
+        2,
+        3,
+        0
+      ]
+    },
+    {
+      "name": "closest_point_triangle3_bad_point3_arity",
+      "kind": "closest_point_triangle3",
+      "triangle3": {
+        "a": [
+          0,
+          0,
+          0
+        ],
+        "b": [
+          4,
+          0,
+          0
+        ],
+        "c": [
+          0,
+          4,
+          0
+        ]
+      },
+      "point3": [
+        3,
+        3
+      ],
+      "expected_closest_point3": [
+        2,
+        2,
+        0
+      ]
+    },
+    {
+      "name": "distance_squared_point_triangle3_missing_triangle3",
+      "kind": "distance_squared_point_triangle3",
+      "point3": [
+        1,
+        1,
+        0
+      ],
+      "expected_distance_sq": 0
+    },
+    {
+      "name": "raycast_sphere_bad_origin_arity",
+      "kind": "raycast_sphere",
+      "sphere": {
+        "center": [
+          3,
+          0,
+          0
+        ],
+        "radius": 2
+      },
+      "ray3": {
+        "origin": [
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "raycast_triangle3_bad_origin_arity",
+      "kind": "raycast_triangle3",
+      "triangle3": {
+        "a": [
+          3,
+          -1,
+          -1
+        ],
+        "b": [
+          3,
+          1,
+          -1
+        ],
+        "c": [
+          3,
+          0,
+          1
+        ]
+      },
+      "ray3": {
+        "origin": [
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "raycast_capsule_missing_ray",
+      "kind": "raycast_capsule",
+      "capsule": {
+        "start": [
+          3,
+          -1
+        ],
+        "end": [
+          3,
+          1
+        ],
+        "radius": 1
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "raycast_polygon_missing_ray",
+      "kind": "raycast_polygon",
+      "polygon": {
+        "points": [
+          [
+            2,
+            -2
+          ],
+          [
+            6,
+            -2
+          ],
+          [
+            6,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "raycast_oriented_box_bad_origin_arity",
+      "kind": "raycast_oriented_box",
+      "oriented_box": {
+        "center": [
+          4,
+          0
+        ],
+        "half_extents": [
+          2,
+          2
+        ],
+        "axis_x": [
+          1,
+          0
+        ],
+        "axis_y": [
+          0,
+          1
+        ]
+      },
+      "ray": {
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_circle_aabb_missing_ray",
+      "kind": "sweep_circle_aabb",
+      "circle": {
+        "center": [
+          0,
+          0
+        ],
+        "radius": 2
+      },
       "aabb": {
         "min": [
+          4,
+          -2
+        ],
+        "max": [
+          8,
+          2
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_circle_capsule_missing_ray",
+      "kind": "sweep_circle_capsule",
+      "circle": {
+        "center": [
+          0,
+          0
+        ],
+        "radius": 2
+      },
+      "capsule": {
+        "start": [
+          6,
+          -1
+        ],
+        "end": [
+          6,
+          1
+        ],
+        "radius": 1
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_circle_segment_missing_ray",
+      "kind": "sweep_circle_segment",
+      "circle": {
+        "center": [
+          0,
+          0
+        ],
+        "radius": 2
+      },
+      "segment": {
+        "start": [
+          6,
+          -1
+        ],
+        "end": [
+          6,
+          1
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_circle_circle_missing_other_circle",
+      "kind": "sweep_circle_circle",
+      "circle": {
+        "center": [
+          0,
+          0
+        ],
+        "radius": 2
+      },
+      "ray": {
+        "origin": [
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_circle_polygon_missing_ray",
+      "kind": "sweep_circle_polygon",
+      "circle": {
+        "center": [
+          0,
+          0
+        ],
+        "radius": 2
+      },
+      "polygon": {
+        "points": [
+          [
+            6,
+            -2
+          ],
+          [
+            10,
+            -2
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            6,
+            2
+          ]
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_circle_oriented_box_bad_origin_arity",
+      "kind": "sweep_circle_oriented_box",
+      "circle": {
+        "center": [
+          0,
+          0
+        ],
+        "radius": 2
+      },
+      "oriented_box": {
+        "center": [
+          8,
+          0
+        ],
+        "half_extents": [
+          2,
+          2
+        ],
+        "axis_x": [
+          1,
+          0
+        ],
+        "axis_y": [
+          0,
+          1
+        ]
+      },
+      "ray": {
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_capsule_aabb_missing_ray",
+      "kind": "sweep_capsule_aabb",
+      "capsule": {
+        "start": [
+          -1,
+          0
+        ],
+        "end": [
+          1,
+          0
+        ],
+        "radius": 1
+      },
+      "aabb": {
+        "min": [
+          8,
+          -2
+        ],
+        "max": [
+          12,
+          2
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_capsule_circle_missing_ray",
+      "kind": "sweep_capsule_circle",
+      "capsule": {
+        "start": [
+          -1,
+          0
+        ],
+        "end": [
+          1,
+          0
+        ],
+        "radius": 1
+      },
+      "circle": {
+        "center": [
+          8,
+          0
+        ],
+        "radius": 1
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_capsule_segment_missing_ray",
+      "kind": "sweep_capsule_segment",
+      "capsule": {
+        "start": [
+          -1,
+          0
+        ],
+        "end": [
+          1,
+          0
+        ],
+        "radius": 1
+      },
+      "segment": {
+        "start": [
+          8,
+          -1
+        ],
+        "end": [
+          8,
+          1
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_capsule_capsule_missing_other_capsule",
+      "kind": "sweep_capsule_capsule",
+      "capsule": {
+        "start": [
+          -1,
+          0
+        ],
+        "end": [
+          1,
+          0
+        ],
+        "radius": 1
+      },
+      "ray": {
+        "origin": [
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_capsule_polygon_missing_ray",
+      "kind": "sweep_capsule_polygon",
+      "capsule": {
+        "start": [
+          -1,
+          0
+        ],
+        "end": [
+          1,
+          0
+        ],
+        "radius": 1
+      },
+      "polygon": {
+        "points": [
+          [
+            8,
+            -2
+          ],
+          [
+            12,
+            -2
+          ],
+          [
+            12,
+            2
+          ],
+          [
+            8,
+            2
+          ]
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_capsule_oriented_box_bad_origin_arity",
+      "kind": "sweep_capsule_oriented_box",
+      "capsule": {
+        "start": [
+          -1,
+          0
+        ],
+        "end": [
+          1,
+          0
+        ],
+        "radius": 1
+      },
+      "oriented_box": {
+        "center": [
+          10,
+          0
+        ],
+        "half_extents": [
+          2,
+          2
+        ],
+        "axis_x": [
+          1,
+          0
+        ],
+        "axis_y": [
+          0,
+          1
+        ]
+      },
+      "ray": {
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "raycast_capsule3_bad_origin_arity",
+      "kind": "raycast_capsule3",
+      "capsule3": {
+        "start": [
+          3,
+          -1,
+          0
+        ],
+        "end": [
+          3,
+          1,
+          0
+        ],
+        "radius": 1
+      },
+      "ray3": {
+        "origin": [
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_capsule3_sphere_missing_ray3",
+      "kind": "sweep_capsule3_sphere",
+      "capsule3": {
+        "start": [
+          -1,
+          0,
+          0
+        ],
+        "end": [
+          1,
+          0,
+          0
+        ],
+        "radius": 1
+      },
+      "sphere": {
+        "center": [
+          8,
+          0,
+          0
+        ],
+        "radius": 1
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_capsule3_aabb3_missing_ray3",
+      "kind": "sweep_capsule3_aabb3",
+      "capsule3": {
+        "start": [
+          -1,
+          0,
+          0
+        ],
+        "end": [
+          1,
+          0,
+          0
+        ],
+        "radius": 1
+      },
+      "aabb3": {
+        "min": [
+          8,
+          -2,
+          -2
+        ],
+        "max": [
+          12,
+          2,
+          2
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_capsule3_aabb3_bad_origin_arity",
+      "kind": "sweep_capsule3_aabb3",
+      "capsule3": {
+        "start": [
+          -1,
+          0,
+          0
+        ],
+        "end": [
+          1,
+          0,
+          0
+        ],
+        "radius": 1
+      },
+      "aabb3": {
+        "min": [
+          8,
+          -2,
+          -2
+        ],
+        "max": [
+          12,
+          2,
+          2
+        ]
+      },
+      "ray3": {
+        "origin": [
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_capsule3_segment3_bad_origin_arity",
+      "kind": "sweep_capsule3_segment3",
+      "capsule3": {
+        "start": [
+          -1,
+          0,
+          0
+        ],
+        "end": [
+          1,
+          0,
+          0
+        ],
+        "radius": 1
+      },
+      "segment3": {
+        "start": [
+          8,
+          -1,
+          0
+        ],
+        "end": [
+          8,
+          1,
+          0
+        ]
+      },
+      "ray3": {
+        "origin": [
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_capsule3_capsule3_missing_other_capsule3",
+      "kind": "sweep_capsule3_capsule3",
+      "capsule3": {
+        "start": [
+          -1,
+          0,
+          0
+        ],
+        "end": [
+          1,
+          0,
+          0
+        ],
+        "radius": 1
+      },
+      "ray3": {
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_segment3_aabb3_bad_origin_arity",
+      "kind": "sweep_segment3_aabb3",
+      "segment3": {
+        "start": [
+          -1,
+          0,
+          0
+        ],
+        "end": [
+          1,
+          0,
+          0
+        ]
+      },
+      "aabb3": {
+        "min": [
+          8,
+          -2,
+          -2
+        ],
+        "max": [
+          12,
+          2,
+          2
+        ]
+      },
+      "ray3": {
+        "origin": [
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_sphere_aabb3_bad_origin_arity",
+      "kind": "sweep_sphere_aabb3",
+      "sphere": {
+        "center": [
+          0,
+          0,
+          0
+        ],
+        "radius": 2
+      },
+      "aabb3": {
+        "min": [
+          4,
+          -2,
+          -2
+        ],
+        "max": [
+          8,
+          2,
+          2
+        ]
+      },
+      "ray3": {
+        "origin": [
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_sphere_capsule3_bad_origin_arity",
+      "kind": "sweep_sphere_capsule3",
+      "sphere": {
+        "center": [
+          0,
+          0,
+          0
+        ],
+        "radius": 2
+      },
+      "capsule3": {
+        "start": [
+          6,
+          -1,
+          0
+        ],
+        "end": [
+          6,
+          1,
+          0
+        ],
+        "radius": 1
+      },
+      "ray3": {
+        "origin": [
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_sphere_segment3_bad_origin_arity",
+      "kind": "sweep_sphere_segment3",
+      "sphere": {
+        "center": [
+          0,
+          0,
+          0
+        ],
+        "radius": 2
+      },
+      "segment3": {
+        "start": [
+          6,
+          -1,
+          0
+        ],
+        "end": [
+          6,
+          1,
+          0
+        ]
+      },
+      "ray3": {
+        "origin": [
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_sphere_sphere_missing_other_sphere",
+      "kind": "sweep_sphere_sphere",
+      "sphere": {
+        "center": [
+          0,
+          0,
+          0
+        ],
+        "radius": 2
+      },
+      "ray3": {
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "circle_segment_bad_endpoint_arity",
+      "kind": "circle_overlaps_segment",
+      "circle": {
+        "center": [
+          0,
+          0
+        ],
+        "radius": 1
+      },
+      "segment": {
+        "start": [
+          0,
+          0
+        ],
+        "end": [
+          1,
+          0,
+          0
+        ]
+      },
+      "expected_overlap": true
+    },
+    {
+      "name": "sphere_segment3_bad_endpoint_arity",
+      "kind": "sphere_overlaps_segment3",
+      "sphere": {
+        "center": [
+          0,
+          0,
+          0
+        ],
+        "radius": 1
+      },
+      "segment3": {
+        "start": [
+          0,
+          0,
+          0
+        ],
+        "end": [
+          1,
+          0
+        ]
+      },
+      "expected_overlap": true
+    },
+    {
+      "name": "sphere_triangle3_bad_center_arity",
+      "kind": "sphere_overlaps_triangle3",
+      "sphere": {
+        "center": [
+          0,
+          0
+        ],
+        "radius": 1
+      },
+      "triangle3": {
+        "a": [
+          0,
+          0,
+          0
+        ],
+        "b": [
+          4,
+          0,
+          0
+        ],
+        "c": [
+          0,
+          4,
+          0
+        ]
+      },
+      "expected_overlap": true
+    },
+    {
+      "name": "segment3_triangle3_missing_triangle",
+      "kind": "segment3_overlaps_triangle3",
+      "segment3": {
+        "start": [
+          1,
+          1,
+          -1
+        ],
+        "end": [
+          1,
+          1,
+          1
+        ]
+      },
+      "expected_overlap": true
+    },
+    {
+      "name": "closest_points_segment3_triangle3_missing_triangle_point",
+      "kind": "closest_points_segment3_triangle3",
+      "segment3": {
+        "start": [
+          1,
+          1,
+          2
+        ],
+        "end": [
+          1,
+          1,
+          4
+        ]
+      },
+      "triangle3": {
+        "a": [
+          0,
+          0,
+          0
+        ],
+        "b": [
+          4,
+          0,
+          0
+        ],
+        "c": [
+          0,
+          4,
+          0
+        ]
+      },
+      "expected_segment_point3": [
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "name": "distance_squared_segment3_triangle3_missing_triangle",
+      "kind": "distance_squared_segment3_triangle3",
+      "segment3": {
+        "start": [
+          1,
+          1,
+          2
+        ],
+        "end": [
+          1,
+          1,
+          4
+        ]
+      },
+      "expected_distance_sq": 4
+    },
+    {
+      "name": "closest_points_sphere_triangle3_missing_triangle_point",
+      "kind": "closest_points_sphere_triangle3",
+      "sphere": {
+        "center": [
+          5,
+          1,
+          1
+        ],
+        "radius": 2
+      },
+      "triangle3": {
+        "a": [
+          0,
+          0,
+          0
+        ],
+        "b": [
+          0,
+          4,
+          0
+        ],
+        "c": [
+          0,
+          0,
+          4
+        ]
+      },
+      "expected_sphere_point3": [
+        3,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "distance_squared_sphere_triangle3_missing_triangle",
+      "kind": "distance_squared_sphere_triangle3",
+      "sphere": {
+        "center": [
+          5,
+          1,
+          1
+        ],
+        "radius": 2
+      },
+      "expected_distance_sq": 9
+    },
+    {
+      "name": "closest_points_capsule3_triangle3_missing_capsule_point",
+      "kind": "closest_points_capsule3_triangle3",
+      "capsule3": {
+        "start": [
+          5,
+          2,
+          1
+        ],
+        "end": [
+          5,
+          2,
+          1
+        ],
+        "radius": 1
+      },
+      "triangle3": {
+        "a": [
+          0,
+          0,
+          0
+        ],
+        "b": [
+          0,
+          4,
+          0
+        ],
+        "c": [
+          0,
+          0,
+          4
+        ]
+      },
+      "expected_triangle_point3": [
+        0,
+        2,
+        1
+      ]
+    },
+    {
+      "name": "distance_squared_capsule3_triangle3_missing_triangle",
+      "kind": "distance_squared_capsule3_triangle3",
+      "capsule3": {
+        "start": [
+          5,
+          2,
+          1
+        ],
+        "end": [
+          5,
+          2,
+          1
+        ],
+        "radius": 1
+      },
+      "expected_distance_sq": 16
+    },
+    {
+      "name": "closest_points_triangle3_triangle3_missing_other_triangle_point",
+      "kind": "closest_points_triangle3_triangle3",
+      "triangle3": {
+        "a": [
+          0,
+          0,
+          0
+        ],
+        "b": [
+          4,
+          0,
+          0
+        ],
+        "c": [
+          0,
+          4,
+          0
+        ]
+      },
+      "other_triangle3": {
+        "a": [
+          1,
+          1,
+          3
+        ],
+        "b": [
+          3,
+          1,
+          3
+        ],
+        "c": [
+          1,
+          3,
+          3
+        ]
+      },
+      "expected_triangle_point3": [
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "name": "distance_squared_triangle3_triangle3_missing_other_triangle",
+      "kind": "distance_squared_triangle3_triangle3",
+      "triangle3": {
+        "a": [
+          0,
+          0,
+          0
+        ],
+        "b": [
+          4,
+          0,
+          0
+        ],
+        "c": [
+          0,
+          4,
+          0
+        ]
+      },
+      "expected_distance_sq": 9
+    },
+    {
+      "name": "closest_points_triangle3_aabb3_missing_aabb_point",
+      "kind": "closest_points_triangle3_aabb3",
+      "triangle3": {
+        "a": [
+          0,
+          0,
+          0
+        ],
+        "b": [
+          0,
+          4,
+          0
+        ],
+        "c": [
+          0,
+          0,
+          4
+        ]
+      },
+      "aabb3": {
+        "min": [
+          3,
+          0,
+          0
+        ],
+        "max": [
+          5,
+          2,
+          2
+        ]
+      },
+      "expected_triangle_point3": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "distance_squared_triangle3_aabb3_missing_triangle",
+      "kind": "distance_squared_triangle3_aabb3",
+      "aabb3": {
+        "min": [
+          3,
+          0,
+          0
+        ],
+        "max": [
+          5,
+          2,
+          2
+        ]
+      },
+      "expected_distance_sq": 9
+    },
+    {
+      "name": "capsule3_triangle3_missing_triangle",
+      "kind": "capsule3_overlaps_triangle3",
+      "capsule3": {
+        "start": [
+          1,
+          1,
+          -1
+        ],
+        "end": [
+          1,
+          1,
+          1
+        ],
+        "radius": 0
+      },
+      "expected_overlap": true
+    },
+    {
+      "name": "triangle3_aabb3_bad_max_arity",
+      "kind": "triangle3_overlaps_aabb3",
+      "triangle3": {
+        "a": [
+          1,
+          -1,
+          -1
+        ],
+        "b": [
+          1,
+          3,
+          -1
+        ],
+        "c": [
+          1,
+          -1,
+          3
+        ]
+      },
+      "aabb3": {
+        "min": [
+          0,
           0,
           0
         ],
         "max": [
           2,
           2
+        ]
+      },
+      "expected_overlap": true
+    },
+    {
+      "name": "triangle3_overlaps_triangle3_missing_other_triangle",
+      "kind": "triangle3_overlaps_triangle3",
+      "triangle3": {
+        "a": [
+          0,
+          0,
+          0
+        ],
+        "b": [
+          4,
+          0,
+          0
+        ],
+        "c": [
+          0,
+          4,
+          0
+        ]
+      },
+      "expected_overlap": true
+    },
+    {
+      "name": "sweep_sphere_triangle3_missing_triangle",
+      "kind": "sweep_sphere_triangle3",
+      "sphere": {
+        "center": [
+          0,
+          0,
+          0
+        ],
+        "radius": 2
+      },
+      "ray3": {
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_capsule3_triangle3_missing_ray3",
+      "kind": "sweep_capsule3_triangle3",
+      "capsule3": {
+        "start": [
+          -1,
+          0,
+          0
+        ],
+        "end": [
+          1,
+          0,
+          0
+        ],
+        "radius": 1
+      },
+      "triangle3": {
+        "a": [
+          8,
+          -2,
+          -2
+        ],
+        "b": [
+          8,
+          2,
+          -2
+        ],
+        "c": [
+          8,
+          0,
+          2
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_segment3_triangle3_missing_triangle",
+      "kind": "sweep_segment3_triangle3",
+      "segment3": {
+        "start": [
+          -1,
+          0,
+          0
+        ],
+        "end": [
+          1,
+          0,
+          0
+        ]
+      },
+      "ray3": {
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "dir": [
+          1,
+          0,
+          0
+        ]
+      },
+      "expected_hit": true
+    },
+    {
+      "name": "sweep_triangle3_triangle3_missing_other_triangle",
+      "kind": "sweep_triangle3_triangle3",
+      "triangle3": {
+        "a": [
+          0,
+          0,
+          0
+        ],
+        "b": [
+          0,
+          3,
+          0
+        ],
+        "c": [
+          0,
+          0,
+          3
+        ]
+      },
+      "ray3": {
+        "origin": [
+          0,
+          1,
+          1
+        ],
+        "dir": [
+          1,
+          0,
+          0
         ]
       },
       "expected_hit": true

@@ -1,149 +1,63 @@
-    # bumpbox
+# bumpbox
 
-    Deterministic, no_std fixed-point 2D geometry and collision-query kernel with a small broadphase companion crate.
+Deterministic, `no_std`-compatible fixed-point geometry and collision queries with 2D and 3D broadphase support, plus a browser-facing wasm demo.
 
-    ## Project purpose
+## Workspace
 
-    Deterministic projects often need geometry and collision queries without hidden floating-point drift, framework lock-in, or a full rigid-body engine. Existing stacks are usually float-first or heavier than custom runtimes want.
+- `crates/bumpbox-core`: fixed-point scalar, 2D and 3D vectors, shapes, and narrow-phase query helpers
+- `crates/bumpbox-grid`: deterministic 2D and 3D uniform-grid broadphase helpers
+- `demo-wasm`: browser showcase with live 2D and 3D scenes rendered from wasm snapshots, including explicit 2D AABB, round, capsule, polygon, and oriented-box raycasts plus 3D AABB, round, capsule, triangle, segment-vs-triangle, triangle-vs-AABB, and triangle-vs-triangle visual verification lanes with baseline, skew, and vertex/edge round-vs-triangle closest-pair guides
 
-    bumpbox exists to provide a focused 2D fixed-point geometry and query layer that remains modular, deterministic, and useful even without a full physics engine.
+## Current surface
 
-    ## Users
+- 2D queries: AABB overlap, closest point, point-to-AABB distance squared, segment closest point, point-to-segment distance squared, circle closest point, point-to-circle distance squared, capsule closest point, point-to-capsule distance squared, convex polygon closest point, point-to-convex-polygon distance squared, oriented-box closest point, point-to-oriented-box distance squared, segment-vs-segment, circle-vs-AABB, circle-vs-segment, circle-vs-capsule, circle-vs-polygon, circle-vs-oriented-box, capsule point containment, capsule-vs-segment, capsule-vs-AABB, capsule-vs-capsule, capsule-vs-polygon, capsule-vs-oriented-box, oriented-box point containment, oriented-box-vs-AABB, oriented-box overlap, convex polygon point containment, convex-polygon-vs-AABB, convex-polygon overlap, circle raycasts, capsule raycasts, polygon raycasts, oriented-box raycasts, swept circle-vs-AABB, swept circle-vs-capsule, swept circle-vs-segment, swept circle-vs-circle, swept circle-vs-convex-polygon, swept circle-vs-oriented-box, swept capsule-vs-AABB, swept capsule-vs-circle, swept capsule-vs-segment, swept capsule-vs-capsule, swept capsule-vs-convex-polygon, swept capsule-vs-oriented-box, and AABB raycasts
+- 3D queries: AABB overlap, closest point, point-to-AABB distance squared, segment closest point, point-to-segment distance squared, sphere closest point, point-to-sphere distance squared, capsule closest point, point-to-capsule distance squared, triangle closest point, point-to-triangle distance squared, segment-vs-triangle closest-point pairs (`ClosestPoints3` / `closest_points_segment3_triangle3`), segment-vs-triangle distance squared (`distance_squared_segment3_triangle3`), sphere-vs-triangle closest-point pairs (`ClosestPair3` / `closest_points_sphere_triangle3`), sphere-vs-triangle distance squared (`distance_squared_sphere_triangle3`), capsule-vs-triangle closest-point pairs (`ClosestPair3` / `closest_points_capsule3_triangle3`), capsule-vs-triangle distance squared (`distance_squared_capsule3_triangle3`), triangle-vs-triangle closest-point pairs (`ClosestPair3` / `closest_points_triangle3_triangle3`), triangle-vs-triangle distance squared (`distance_squared_triangle3_triangle3`), triangle-vs-AABB closest-point pairs (`ClosestPair3` / `closest_points_triangle3_aabb3`) with pinned face-interior/face-interior semantics, triangle-vs-AABB distance squared (`distance_squared_triangle3_aabb3`), segment-vs-AABB, segment-vs-triangle, sphere-vs-AABB, sphere-vs-segment, sphere-vs-sphere, sphere-vs-triangle, capsule point containment, sphere-vs-capsule, capsule-vs-AABB, capsule-vs-capsule, capsule-vs-triangle, triangle-vs-triangle, triangle-vs-AABB, sphere raycasts, capsule raycasts, triangle raycasts, swept segment-vs-AABB3, swept segment-vs-triangle3, swept triangle-vs-triangle3, swept sphere-vs-AABB3, swept sphere-vs-capsule3, swept sphere-vs-segment3, swept sphere-vs-sphere, swept sphere-vs-triangle3, swept capsule-vs-sphere, swept capsule-vs-triangle3, swept capsule-vs-AABB3, swept capsule-vs-segment3, swept capsule-vs-capsule3, and AABB raycasts
+- 2D and 3D deterministic uniform-grid broadphase candidate queries
+- `Fx32` backed by the `fixed` crate
+- Contract schemas and fixture validation for query cases and grid config
 
-    Game engine authors, rollback/lockstep runtime builders, simulation developers, wasm-hosted game teams, and custom-tool authors who need deterministic spatial queries.
+## Validation
 
-    ## Delivery mode
+```bash
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets --all-features -- -D warnings
+cargo test --workspace --all-features
+cargo check --workspace --lib --no-default-features
+python3 scripts/validate_contract_fixtures.py
+```
 
-    **scaffold + walking skeleton**
+## Wasm demo
 
-    This repository is intentionally narrow. It ships a compileable workspace, a working skeleton in code, boundary contracts, starter tests, CI wiring, and an agent execution pack. It does **not** claim the full product is complete.
+Build the wasm package:
 
-    ## Repo layout
+```bash
+wasm-pack build demo-wasm --target web --release --out-dir www/pkg
+```
 
-    ```text
-    bumpbox-ready-monorepo
-├── .editorconfig
-├── .github/
-│   └── workflows/
-│       └── ci.yml
-├── .gitignore
-├── AGENTS.md
-├── Cargo.toml
-├── LICENSE
-├── MASTER_SPEC.md
-├── Makefile
-├── README.md
-├── clippy.toml
-├── codex/
-│   ├── 00-OVERNIGHT-RUNBOOK.md
-│   ├── ENVIRONMENT-NOTES.md
-│   ├── prompts/
-│   │   ├── 00-LAUNCH-THIS-REPO.md
-│   │   ├── 01-REPO-AND-TOOLING.md
-│   │   ├── 02-CONTRACTS-AND-SCHEMAS.md
-│   │   ├── 03-CORE-DOMAIN.md
-│   │   ├── 04-APIS-OR-PLUGIN-LAYER.md
-│   │   ├── 05-TESTS-AND-VALIDATION.md
-│   │   ├── 06-CI-LINT-AND-RELEASE.md
-│   │   └── 07-DOCS-FINAL-AUDIT.md
-│   └── taskboard.yaml
-├── contracts/
-│   ├── grid-config.schema.json
-│   └── query-cases.schema.json
-├── crates/
-│   ├── bumpbox-core/
-│   │   ├── Cargo.toml
-│   │   ├── examples/
-│   │   │   └── queries.rs
-│   │   ├── src/
-│   │   │   ├── lib.rs
-│   │   │   ├── queries.rs
-│   │   │   ├── scalar.rs
-│   │   │   ├── shapes.rs
-│   │   │   └── vec2.rs
-│   │   └── tests/
-│   │       └── smoke.rs
-│   └── bumpbox-grid/
-│       ├── Cargo.toml
-│       ├── src/
-│       │   └── lib.rs
-│       └── tests/
-│           └── grid_smoke.rs
-├── docs/
-│   ├── 01-PRD.md
-│   ├── 02-TECHNICAL-ARCHITECTURE.md
-│   ├── 03-WBS-AND-MILESTONES.md
-│   ├── 04-TDD-QUALITY-GATES.md
-│   ├── 05-ACCEPTANCE-TEST-MATRIX.md
-│   ├── 06-RISK-REGISTER.md
-│   └── 07-REPO-BLUEPRINT.md
-├── fixtures/
-│   └── contracts/
-│       ├── grid-config.invalid.json
-│       ├── grid-config.valid.json
-│       ├── query-cases.invalid.json
-│       └── query-cases.valid.json
-├── rust-toolchain.toml
-├── rustfmt.toml
-└── scripts/
-    └── validate_contract_fixtures.py
-    ```
+Serve the site:
 
-    ## Prerequisites
+```bash
+cd demo-wasm/www
+python3 -m http.server 8080
+```
 
-    - Rust stable toolchain with `clippy` and `rustfmt`
-    - Python 3.11+ for contract-fixture validation scripts
-    - Standard POSIX shell environment for local automation
+Open `http://localhost:8080` to see the 2D containment plus AABB/circle/capsule/polygon/oriented-box raycast scene and the 3D sphere/capsule/triangle scene with AABB, sphere, capsule, and triangle ray overlays, a visible static segment-vs-triangle overlap lane, visible baseline, skew, and vertex/edge sphere-vs-triangle guidance lanes plus baseline and skew capsule-vs-triangle guidance lanes, a visible triangle-vs-AABB closest-pair guidance lane, visible segment-vs-triangle and triangle-vs-triangle closest-pair guidance lanes, a visible triangle-vs-triangle overlap lane, visible sphere-to-triangle, segment-to-triangle, capsule-to-triangle, and triangle-to-triangle sweep lanes, and triangle closest-point guidance.
 
-    ## Setup commands
+## Common commands
 
-    ```bash
-    git clone <your-fork-url> bumpbox
-    cd bumpbox
-    make bootstrap
-    make test
-    ```
+```bash
+make fmt
+make lint
+make test
+make test-no-default
+make docs
+make wasm-demo
+make wasm-demo-serve
+```
 
-    ## Common commands
+## Repo workflow
 
-    ```bash
-    make fmt
-    make lint
-    make test
-    make test-no-default
-    make docs
-    ```
-
-    ## Development workflow
-
-    1. Pick the next open item from `codex/taskboard.yaml`.
-    2. Write or extend a failing test first.
-    3. Implement the smallest change that turns the test green.
-    4. Refactor only after the behavior is locked by tests.
-    5. Re-run `make ci` before claiming completion.
-    6. Update the docs pack and taskboard when scope or status changes.
-
-    ## How an agent should start
-
-    1. Read `MASTER_SPEC.md`.
-    2. Read `AGENTS.md`.
-    3. Open `codex/00-OVERNIGHT-RUNBOOK.md`.
-    4. Execute `codex/prompts/00-LAUNCH-THIS-REPO.md`.
-    5. Continue through the numbered prompt pack without redoing finished work.
-
-    ## Preferred stack
-
-    Rust stable workspace, no required third-party runtime deps, and an explicit Q16.16 fixed-point scalar for the walking skeleton.
-
-    ## What is scaffolded vs implemented
-
-    Implemented now: workspace scaffold, `bumpbox-core`, `bumpbox-grid`, a working Q16.16 scalar type, core 2D primitives, overlap/closest-point/raycast helpers, deterministic grid query ordering, contract schemas, fixtures, CI, and starter tests.
-
-    Partially implemented: capsule, OBB, and convex-polygon query expansion; more sweep/TOI coverage; and alternative math adapters.
-
-    ## Next milestones
-
-    1. Harden the fixed-point edge-case policy and expand degenerate-input tests.
-    2. Add more narrow-phase queries for capsule, OBB, and polygon pairs.
-    3. Expand the broadphase from build-per-frame usage into richer update flows.
-    4. Decide whether backend abstraction over other fixed-point types is worth the complexity.
+1. Read `MASTER_SPEC.md` and `AGENTS.md`.
+2. Use `codex/taskboard.yaml` as the sequencing source of truth.
+3. Start with a failing test when changing runtime behavior.
+4. Re-run the validation commands before claiming completion.

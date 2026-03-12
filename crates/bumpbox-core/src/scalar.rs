@@ -66,6 +66,76 @@ impl Fx32 {
     }
 }
 
+pub(crate) fn sqrt_non_negative(value: Fx32) -> Option<Fx32> {
+    if value < Fx32::ZERO {
+        return None;
+    }
+
+    let root = integer_sqrt_u128((value.raw() as u128) << Fx32::FRAC_BITS).min(i32::MAX as u128);
+    Some(Fx32::from_raw(root as i32))
+}
+
+pub(crate) fn smallest_non_negative_quadratic_root(a: Fx32, b: Fx32, c: Fx32) -> Option<Fx32> {
+    if a == Fx32::ZERO {
+        if b == Fx32::ZERO {
+            return None;
+        }
+
+        let root_raw = ((-(c.raw() as i128)) << Fx32::FRAC_BITS) / b.raw() as i128;
+        let root = clamp_i128_to_fx32(root_raw);
+        return (root >= Fx32::ZERO).then_some(root);
+    }
+
+    let a_raw = a.raw() as i128;
+    let b_raw = b.raw() as i128;
+    let c_raw = c.raw() as i128;
+    let discriminant_raw = ((b_raw * b_raw) - (4 * a_raw * c_raw)) >> Fx32::FRAC_BITS;
+    if discriminant_raw < 0 {
+        return None;
+    }
+
+    let sqrt_discriminant_raw =
+        integer_sqrt_u128((discriminant_raw as u128) << Fx32::FRAC_BITS).min(i32::MAX as u128);
+    let denominator_raw = 2 * a_raw;
+    let root0 = clamp_i128_to_fx32(
+        (((-b_raw) - sqrt_discriminant_raw as i128) << Fx32::FRAC_BITS) / denominator_raw,
+    );
+    let root1 = clamp_i128_to_fx32(
+        (((-b_raw) + sqrt_discriminant_raw as i128) << Fx32::FRAC_BITS) / denominator_raw,
+    );
+    let root0_valid = root0 >= Fx32::ZERO;
+    let root1_valid = root1 >= Fx32::ZERO;
+
+    match (root0_valid, root1_valid) {
+        (true, true) => Some(root0.min(root1)),
+        (true, false) => Some(root0),
+        (false, true) => Some(root1),
+        (false, false) => None,
+    }
+}
+
+fn integer_sqrt_u128(value: u128) -> u128 {
+    let mut remainder = value;
+    let mut root = 0u128;
+    let mut bit = 1u128 << 126;
+
+    while bit > remainder {
+        bit >>= 2;
+    }
+
+    while bit != 0 {
+        if remainder >= root + bit {
+            remainder -= root + bit;
+            root = (root >> 1) + bit;
+        } else {
+            root >>= 1;
+        }
+        bit >>= 2;
+    }
+
+    root
+}
+
 const fn clamp_i64_to_i32(value: i64) -> i32 {
     if value < i32::MIN as i64 {
         i32::MIN
@@ -73,6 +143,16 @@ const fn clamp_i64_to_i32(value: i64) -> i32 {
         i32::MAX
     } else {
         value as i32
+    }
+}
+
+const fn clamp_i128_to_fx32(value: i128) -> Fx32 {
+    if value < i32::MIN as i128 {
+        Fx32::MIN
+    } else if value > i32::MAX as i128 {
+        Fx32::MAX
+    } else {
+        Fx32::from_raw(value as i32)
     }
 }
 

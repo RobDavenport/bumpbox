@@ -4,16 +4,18 @@
 
 - **Product:** bumpbox
 - **Repo slug:** bumpbox
-- **Description:** Deterministic, no_std fixed-point geometry and collision-query kernel with a 2D broadphase companion crate, established 2D query surface, and an additive 3D core query skeleton.
+- **Description:** Deterministic, no_std fixed-point geometry and collision-query kernel with 2D and 3D broadphase support, established 2D and additive 3D query surfaces, and a browser-facing wasm demo.
 - **Users:** Game engine authors, rollback/lockstep runtime builders, simulation developers, wasm-hosted game teams, and custom-tool authors who need deterministic spatial queries.
 - **Problem:** Deterministic projects often need geometry and collision queries without hidden floating-point drift, framework lock-in, or a full rigid-body engine. Existing stacks are usually float-first or heavier than custom runtimes want.
 - **Core value proposition:** A focused 2D fixed-point geometry and query layer that remains modular, deterministic, and useful even without a full physics engine.
 
 ## Architecture summary
 
-- Rust workspace root with `bumpbox-core` and `bumpbox-grid`
+- Rust workspace root with `bumpbox-core`, `bumpbox-grid`, and `demo-wasm`
 - `no_std`-compatible core path
-- 2D and 3D value types in the core crate, with the broadphase companion still scoped to 2D
+- 2D and 3D value types plus query helpers in the core crate
+- 2D and 3D deterministic uniform-grid broadphase support
+- Browser demo surface under `demo-wasm/`
 - Contract fixtures and schemas under `contracts/` + `fixtures/`
 - Agent execution pack under `codex/`
 - CI-ready workflow under `.github/workflows/`

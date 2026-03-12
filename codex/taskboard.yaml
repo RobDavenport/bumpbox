@@ -22,8 +22,161 @@ items:
     status: done
     depends_on: [bumpbox.core-math]
   - id: bumpbox.3d-broadphase
-    status: todo
+    status: done
     depends_on: [bumpbox.3d-core-skeleton]
+  - id: bumpbox.3d-sphere-capsule-queries
+    status: done
+    depends_on: [bumpbox.3d-core-skeleton]
+  - id: bumpbox.3d-pair-overlaps
+    status: done
+    depends_on: [bumpbox.3d-sphere-capsule-queries]
+  - id: bumpbox.3d-interop-tranche
+    status: done
+    depends_on: [bumpbox.3d-pair-overlaps]
+  - id: bumpbox.demo-wasm
+    status: done
+    depends_on: [bumpbox.3d-core-skeleton, bumpbox.3d-broadphase]
+  - id: bumpbox.2d-capsule-pairs
+    status: done
+    depends_on: [bumpbox.expanded-query-coverage]
+  - id: bumpbox.2d-polygon-obb-pairs
+    status: done
+    depends_on: [bumpbox.expanded-query-coverage]
+  - id: bumpbox.2d-circle-poly-obb
+    status: done
+    depends_on: [bumpbox.2d-polygon-obb-pairs]
+  - id: bumpbox.2d-capsule-poly-obb
+    status: done
+    depends_on: [bumpbox.2d-circle-poly-obb]
+  - id: bumpbox.2d-aabb-interop
+    status: done
+    depends_on: [bumpbox.2d-capsule-poly-obb]
+  - id: bumpbox.2d-segment-queries
+    status: done
+    depends_on: [bumpbox.2d-aabb-interop]
+  - id: bumpbox.round-raycasts
+    status: done
+    depends_on: [bumpbox.2d-segment-queries, bumpbox.3d-interop-tranche]
+  - id: bumpbox.capsule-raycasts
+    status: done
+    depends_on: [bumpbox.round-raycasts]
+  - id: bumpbox.polygon-obb-raycasts
+    status: done
+    depends_on: [bumpbox.capsule-raycasts]
+  - id: bumpbox.round-aabb-sweeps
+    status: done
+    depends_on: [bumpbox.polygon-obb-raycasts]
+  - id: bumpbox.round-capsule-sweeps
+    status: done
+    depends_on: [bumpbox.round-aabb-sweeps]
+  - id: bumpbox.round-segment-sweeps
+    status: done
+    depends_on: [bumpbox.round-capsule-sweeps]
+  - id: bumpbox.round-round-sweeps
+    status: done
+    depends_on: [bumpbox.round-segment-sweeps]
+  - id: bumpbox.round-polygon-obb-sweeps
+    status: done
+    depends_on: [bumpbox.round-round-sweeps, bumpbox.2d-circle-poly-obb]
+  - id: bumpbox.closest-point-distance-queries
+    status: done
+    depends_on: [bumpbox.round-polygon-obb-sweeps]
+  - id: bumpbox.capsule-sweeps
+    status: done
+    depends_on: [bumpbox.closest-point-distance-queries, bumpbox.capsule-raycasts]
+  - id: bumpbox.3d-capsule-sweeps
+    status: done
+    depends_on: [bumpbox.capsule-sweeps, bumpbox.3d-pair-overlaps]
+  - id: bumpbox.3d-capsule-aabb-sweep
+    status: done
+    depends_on: [bumpbox.3d-capsule-sweeps]
+  - id: bumpbox.3d-segment-aabb-sweep
+    status: done
+    depends_on: [bumpbox.3d-capsule-aabb-sweep]
+  - id: bumpbox.3d-triangle-queries
+    status: done
+    depends_on: [bumpbox.3d-segment-aabb-sweep]
+  - id: bumpbox.3d-triangle-overlaps
+    status: done
+    depends_on: [bumpbox.3d-triangle-queries]
+  - id: bumpbox.3d-triangle-sweeps
+    status: done
+    depends_on: [bumpbox.3d-triangle-overlaps]
+  - id: bumpbox.3d-capsule-triangle-sweeps
+    status: done
+    depends_on: [bumpbox.3d-triangle-sweeps]
+  - id: bumpbox.3d-segment-triangle-overlaps
+    status: done
+    depends_on: [bumpbox.3d-triangle-overlaps]
+  - id: bumpbox.3d-triangle-triangle-overlaps
+    status: done
+    depends_on: [bumpbox.3d-triangle-overlaps]
+  - id: bumpbox.3d-triangle-triangle-distance-queries
+    status: done
+    depends_on: [bumpbox.3d-triangle-triangle-overlaps]
+  - id: bumpbox.3d-segment-triangle-distance-queries
+    status: done
+    depends_on: [bumpbox.3d-segment-triangle-overlaps]
+  - id: bumpbox.3d-segment-triangle-sweeps
+    status: done
+    depends_on: [bumpbox.3d-triangle-sweeps]
+  - id: bumpbox.demo-raycast-refresh
+    status: done
+    depends_on: [bumpbox.capsule-raycasts, bumpbox.demo-wasm]
+  - id: bumpbox.demo-2d-polygon-obb-raycast-refresh
+    status: done
+    depends_on: [bumpbox.polygon-obb-raycasts, bumpbox.demo-raycast-refresh]
+  - id: bumpbox.demo-3d-triangle-refresh
+    status: done
+    depends_on: [bumpbox.3d-triangle-overlaps, bumpbox.demo-raycast-refresh]
+  - id: bumpbox.demo-3d-segment-triangle-refresh
+    status: done
+    depends_on: [bumpbox.3d-segment-triangle-overlaps, bumpbox.demo-3d-triangle-refresh]
+  - id: bumpbox.demo-3d-triangle-triangle-refresh
+    status: done
+    depends_on: [bumpbox.3d-triangle-triangle-overlaps, bumpbox.demo-3d-triangle-refresh]
+  - id: bumpbox.demo-3d-triangle-triangle-closest-refresh
+    status: done
+    depends_on: [bumpbox.3d-triangle-triangle-distance-queries, bumpbox.demo-3d-triangle-triangle-refresh]
+  - id: bumpbox.demo-3d-segment-triangle-closest-refresh
+    status: done
+    depends_on: [bumpbox.3d-segment-triangle-distance-queries, bumpbox.demo-3d-segment-triangle-refresh]
+  - id: bumpbox.demo-3d-triangle-sweep-refresh
+    status: done
+    depends_on: [bumpbox.3d-triangle-sweeps, bumpbox.demo-3d-triangle-refresh]
+  - id: bumpbox.demo-3d-capsule-triangle-sweep-refresh
+    status: done
+    depends_on: [bumpbox.3d-capsule-triangle-sweeps, bumpbox.demo-3d-triangle-sweep-refresh]
+  - id: bumpbox.demo-3d-segment-triangle-sweep-refresh
+    status: done
+    depends_on: [bumpbox.3d-segment-triangle-sweeps, bumpbox.demo-3d-triangle-sweep-refresh]
+  - id: bumpbox.3d-triangle-triangle-sweeps
+    status: done
+    depends_on: [bumpbox.3d-triangle-triangle-overlaps, bumpbox.3d-triangle-triangle-distance-queries]
+  - id: bumpbox.demo-3d-triangle-triangle-sweep-refresh
+    status: done
+    depends_on: [bumpbox.3d-triangle-triangle-sweeps, bumpbox.demo-3d-triangle-triangle-refresh]
+  - id: bumpbox.3d-round-triangle-distance-queries
+    status: done
+    depends_on: [bumpbox.3d-triangle-overlaps, bumpbox.3d-sphere-capsule-queries]
+  - id: bumpbox.demo-3d-round-triangle-distance-refresh
+    status: done
+    depends_on: [bumpbox.3d-round-triangle-distance-queries, bumpbox.demo-3d-triangle-refresh]
+  - id: bumpbox.demo-3d-round-triangle-distance-broadening
+    status: done
+    depends_on: [bumpbox.demo-3d-round-triangle-distance-refresh]
+  - id: bumpbox.demo-3d-round-triangle-distance-case-matrix
+    status: done
+    depends_on: [bumpbox.demo-3d-round-triangle-distance-broadening]
+  - id: bumpbox.3d-triangle-aabb-distance-queries
+    status: done
+    depends_on: [bumpbox.3d-triangle-overlaps]
+  - id: bumpbox.3d-triangle-aabb-face-interior-hardening
+    status: done
+    depends_on: [bumpbox.3d-triangle-aabb-distance-queries]
+  - id: bumpbox.demo-3d-triangle-aabb-distance-refresh
+    status: done
+    depends_on: [bumpbox.3d-triangle-aabb-distance-queries, bumpbox.demo-3d-triangle-refresh]
   - id: bumpbox.docs-and-release-hygiene
     status: done
     depends_on: [bumpbox.bootstrap]

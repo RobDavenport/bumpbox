@@ -38,6 +38,18 @@ impl Ray3 {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Segment3 {
+    pub start: Vec3,
+    pub end: Vec3,
+}
+
+impl Segment3 {
+    pub const fn new(start: Vec3, end: Vec3) -> Self {
+        Self { start, end }
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Sphere {
     pub center: Vec3,
     pub radius: Fx32,
@@ -50,5 +62,34 @@ impl Sphere {
         } else {
             None
         }
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Capsule3 {
+    pub segment: Segment3,
+    pub radius: Fx32,
+}
+
+impl Capsule3 {
+    pub fn try_new(segment: Segment3, radius: Fx32) -> Option<Self> {
+        if radius >= Fx32::ZERO {
+            Some(Self { segment, radius })
+        } else {
+            None
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Triangle3 {
+    pub a: Vec3,
+    pub b: Vec3,
+    pub c: Vec3,
+}
+
+impl Triangle3 {
+    pub const fn new(a: Vec3, b: Vec3, c: Vec3) -> Self {
+        Self { a, b, c }
     }
 }

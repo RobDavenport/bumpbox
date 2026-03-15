@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>bumpbox Collision Lab</title>
+    <title>bumpbox Interactive Query Lab</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -16,110 +16,151 @@
     <div class="bg-orb orb-a"></div>
     <div class="bg-orb orb-b"></div>
     <div class="bg-grid"></div>
+
     <main class="shell">
       <header class="hero">
         <div class="hero-copy">
           <p class="eyebrow">Deterministic Geometry Kernel</p>
-          <h1>bumpbox Collision Lab</h1>
+          <h1>bumpbox Interactive Query Lab</h1>
           <p class="lede">
-            Live 2D and 3D wasm scenes driven by the fixed-point query layer and broadphase grids.
+            Drag the shapes yourself in 2D and 3D. Each lesson isolates one query family so the
+            collision result is readable instead of buried inside a full autoplay scene.
           </p>
         </div>
-        <div class="hero-status">
+        <div class="hero-status card">
           <p id="wasm-status" class="mono">WASM core: loading...</p>
-          <p id="wasm-detail" class="mono">2D tick=0 | 3D tick=0</p>
+          <p id="wasm-detail" class="mono">2D and 3D labs booting</p>
         </div>
       </header>
 
-      <section class="toolbar card">
-        <div class="toolbar-block">
-          <span class="toolbar-label">Playback</span>
-          <div class="button-row">
-            <button id="play-button" type="button">Play</button>
-            <button id="pause-button" type="button">Pause</button>
-            <button id="reset-button" type="button">Reset</button>
+      <section class="card control-bar">
+        <div class="control-group">
+          <span class="toolbar-label">Dimension</span>
+          <div id="dimension-row" class="pill-row">
+            <button type="button" class="dimension-pill" data-dimension="2d">2D</button>
+            <button type="button" class="dimension-pill" data-dimension="3d">3D</button>
           </div>
         </div>
-        <div class="toolbar-block">
-          <label class="toolbar-label" for="speed-range">Speed</label>
-          <input id="speed-range" type="range" min="1" max="4" value="1" />
-          <span id="speed-value" class="mono">1x</span>
-        </div>
-        <div class="toolbar-block">
-          <span class="toolbar-label">Legend</span>
-          <div class="legend">
-            <span><i class="swatch swatch-amber"></i> Dynamic bodies</span>
-            <span><i class="swatch swatch-teal"></i> Query sensors</span>
-            <span><i class="swatch swatch-coral"></i> Collision hits</span>
-            <span><i class="swatch swatch-slate"></i> Static geometry</span>
-            <span><i class="swatch swatch-blue"></i> Polygon rays</span>
-            <span><i class="swatch swatch-violet"></i> OBB rays</span>
+        <div class="control-group">
+          <span class="toolbar-label">Lessons</span>
+          <div id="mode-row" class="pill-row">
+            <button type="button" class="mode-pill" data-mode="overlap">Overlap</button>
+            <button type="button" class="mode-pill" data-mode="containment">Containment</button>
+            <button type="button" class="mode-pill" data-mode="raycast">Raycast</button>
+            <button type="button" class="mode-pill" data-mode="broadphase">Broadphase</button>
           </div>
+        </div>
+        <div id="raycast-target-group" class="control-group">
+          <span class="toolbar-label">Ray Target</span>
+          <div id="ray-target-row" class="pill-row">
+            <button type="button" class="target-pill" data-ray-target="aabb">AABB</button>
+            <button type="button" class="target-pill" data-ray-target="circle">Circle</button>
+            <button type="button" class="target-pill" data-ray-target="capsule">Capsule</button>
+            <button type="button" class="target-pill" data-ray-target="polygon">Polygon</button>
+            <button type="button" class="target-pill" data-ray-target="oriented_box">OBB</button>
+          </div>
+        </div>
+        <div id="view-preset-group" class="control-group is-hidden">
+          <span class="toolbar-label">3D View</span>
+          <div id="view-preset-row" class="pill-row">
+            <button type="button" class="view-pill" data-view="default">Default</button>
+            <button type="button" class="view-pill" data-view="wide">Wide</button>
+            <button type="button" class="view-pill" data-view="top">Top Bias</button>
+          </div>
+        </div>
+        <div class="control-group">
+          <span class="toolbar-label">Layers</span>
+          <div id="layer-row" class="pill-row">
+            <button type="button" class="layer-pill" data-layer="handles">Handles</button>
+            <button type="button" class="layer-pill" data-layer="callouts">Callouts</button>
+            <button type="button" class="layer-pill" data-layer="axes">Axes</button>
+          </div>
+        </div>
+        <div class="control-group control-action">
+          <span class="toolbar-label">Layout</span>
+          <button id="reset-button" type="button" class="ghost-button">Reset Scene</button>
         </div>
       </section>
 
-      <section class="panel-grid">
+      <section class="lab-grid">
         <article class="card scene-card">
           <div class="section-head">
             <div>
-              <p class="eyebrow">2D Scene</p>
-              <h2>Containment + Raycasts</h2>
+              <p class="eyebrow">Interactive Canvas</p>
+              <h2 id="mode-title">Overlap Lab</h2>
             </div>
-            <p id="scene2-summary" class="mono chip">probe idle</p>
+            <p id="mode-summary" class="mono chip">loading</p>
           </div>
-          <canvas id="scene2d" width="640" height="420"></canvas>
-          <div class="stats-grid">
-            <div class="stat-block">
-              <h3>Live Flags</h3>
-              <ul id="scene2-flags" class="stat-list"></ul>
-            </div>
-            <div class="stat-block">
-              <h3>Grid Candidates</h3>
-              <div id="scene2-candidates" class="chip-row"></div>
-            </div>
-          </div>
+          <canvas id="scene-canvas" width="760" height="520"></canvas>
+          <p id="drag-hint" class="drag-hint">
+            Drag any labeled handle on the canvas. The readout updates after every move.
+          </p>
         </article>
 
-        <article class="card scene-card">
-          <div class="section-head">
-            <div>
-              <p class="eyebrow">3D Scene</p>
-              <h2>Sphere + Capsule Ray Lab</h2>
-            </div>
-            <p id="scene3-summary" class="mono chip">sphere idle</p>
+        <aside class="card info-card">
+          <div class="info-block">
+            <p class="eyebrow">Current Lesson</p>
+            <p id="mode-description" class="panel-copy"></p>
           </div>
-          <canvas id="scene3d" width="640" height="420"></canvas>
-          <div class="stats-grid">
-            <div class="stat-block">
-              <h3>Live Flags</h3>
-              <ul id="scene3-flags" class="stat-list"></ul>
-            </div>
-            <div class="stat-block">
-              <h3>Grid Candidates</h3>
-              <div id="scene3-candidates" class="chip-row"></div>
-            </div>
+          <div class="info-block">
+            <h3>Drag Handles</h3>
+            <div id="handle-list" class="chip-row"></div>
           </div>
-        </article>
+          <div class="info-block">
+            <h3>Quick Scenarios</h3>
+            <div id="scenario-list" class="chip-row"></div>
+            <div class="scenario-toolbar">
+              <button id="scenario-prev" type="button" class="ghost-button mini-button">Previous</button>
+              <button id="scenario-replay" type="button" class="ghost-button mini-button">Replay</button>
+              <button id="scenario-next" type="button" class="ghost-button mini-button">Next</button>
+              <button id="scenario-play" type="button" class="ghost-button mini-button">Play Tour</button>
+            </div>
+            <p id="scenario-status" class="mono panel-copy">No scenario selected</p>
+            <p id="scenario-caption" class="panel-copy">
+              Pick a scenario to animate a guided setup for the current lesson.
+            </p>
+          </div>
+          <div class="info-block">
+            <h3>Selection</h3>
+            <p id="selection-label" class="panel-copy">No handle selected</p>
+            <p id="selection-coords" class="mono">-</p>
+          </div>
+          <div id="depth-block" class="info-block is-hidden">
+            <h3>Depth</h3>
+            <p id="depth-label" class="panel-copy">Selected handle</p>
+            <input id="depth-range" type="range" min="2" max="62" step="0.5" value="16" />
+            <p id="depth-value" class="mono">z=16.0</p>
+            <p class="panel-copy">Wheel or use `[` `]` / arrow keys for depth nudges. Hold `Shift` for larger steps.</p>
+          </div>
+          <div class="info-block">
+            <h3>Live Readout</h3>
+            <ul id="live-flags" class="stat-list"></ul>
+          </div>
+          <div class="info-block">
+            <h3>Detail</h3>
+            <p id="detail-title" class="panel-copy">Hover a flag or candidate</p>
+            <p id="detail-body" class="panel-copy">
+              The panel will explain the selected boolean or grid candidate in plain language.
+            </p>
+          </div>
+          <div class="info-block">
+            <h3>Interpretation</h3>
+            <div id="insight-list" class="note-list"></div>
+          </div>
+          <div id="candidate-block" class="info-block">
+            <h3>Grid Candidates</h3>
+            <div id="candidate-ids" class="chip-row"></div>
+          </div>
+        </aside>
       </section>
 
-      <section class="card notes">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">What You're Seeing</p>
-            <h2>Query Surface</h2>
-          </div>
-        </div>
-        <div class="notes-grid">
-          <p>
-            The 2D canvas shows circle-vs-AABB overlap, point containment for capsule, OBB, and
-            convex polygon, explicit AABB/circle/capsule/polygon/OBB raycasts with hit normals,
-            and sorted broadphase candidate IDs.
-          </p>
-          <p>
-            The 3D canvas shows sphere-vs-AABB, sphere-vs-capsule, capsule point containment,
-            explicit AABB3/sphere/capsule raycasts, and deterministic `UniformGrid3` candidate
-            queries rendered with a simple projected wireframe view.
-          </p>
+      <section class="card footer-card">
+        <div class="legend">
+          <span><i class="swatch swatch-amber"></i> draggable query actor</span>
+          <span><i class="swatch swatch-coral"></i> active hit / overlap</span>
+          <span><i class="swatch swatch-teal"></i> ray or sensor</span>
+          <span><i class="swatch swatch-slate"></i> target geometry</span>
+          <span><i class="swatch swatch-blue"></i> direct manipulation handle</span>
         </div>
       </section>
     </main>

@@ -12,7 +12,7 @@
 
 ### Demo crate
 
-`demo-wasm` depends on `bumpbox-core` and `bumpbox-grid` and exposes browser-friendly deterministic scene snapshots through `wasm-bindgen`. Static assets in `demo-wasm/www/` render those snapshots on canvas for 2D and 3D showcase scenarios with explicit 2D AABB, round, capsule, polygon, and oriented-box raycast overlays plus 3D AABB, round, and capsule raycast overlays.
+`demo-wasm` depends on `bumpbox-core` and `bumpbox-grid` and exposes browser-friendly deterministic scene state through `wasm-bindgen`. Static assets in `demo-wasm/www/` render interactive 2D and 3D canvases where the browser drags wasm-owned handles, adjusts 3D depth explicitly, and re-renders overlap, containment, raycast, and broadphase query results after every move; deterministic 2D and 3D snapshot builders remain available for test coverage.
 
 ### Boundaries
 
@@ -21,7 +21,7 @@ The public API stays type-first. No global world, registry, or physics scene is 
 ### Data flow
 
 User constructs 2D or 3D shapes -> calls narrow-phase query helpers or 2D/3D grid insertion/query methods -> receives deterministic plain-data results.
-The demo path runs deterministic scene builders in wasm -> serializes snapshot state -> renders it in browser canvas views with per-target raycast hit markers and normals.
+The demo path keeps interactive scene state in wasm -> browser pointer input moves explicit handles and, for 3D, adjusts selected handle depth -> wasm recomputes query results -> the browser renders the updated canvas and readout. Snapshot builders still serialize deterministic test scenes for coverage.
 
 ### Contracts
 

@@ -8,7 +8,7 @@ Deterministic, `no_std`-compatible fixed-point geometry and collision queries wi
 
 - `crates/bumpbox-core`: fixed-point scalar, 2D and 3D vectors, shapes, and narrow-phase query helpers
 - `crates/bumpbox-grid`: deterministic 2D and 3D uniform-grid broadphase helpers
-- `demo-wasm`: browser showcase with live 2D and 3D scenes rendered from wasm snapshots, including explicit 2D AABB, round, capsule, polygon, and oriented-box raycasts plus 3D AABB, round, capsule, triangle, segment-vs-triangle, triangle-vs-AABB, and triangle-vs-triangle visual verification lanes with baseline, skew, and vertex/edge round-vs-triangle closest-pair guides
+- `demo-wasm`: browser showcase with interactive 2D and 3D query labs rendered from wasm-managed state, plus deterministic 2D and 3D snapshot exports used by tests and supporting browser assets
 
 ## Current surface
 
@@ -45,7 +45,7 @@ cd demo-wasm/www
 python3 -m http.server 8080
 ```
 
-Open `http://localhost:8080` to see the 2D containment plus AABB/circle/capsule/polygon/oriented-box raycast scene and the 3D sphere/capsule/triangle scene with AABB, sphere, capsule, and triangle ray overlays, a visible static segment-vs-triangle overlap lane, visible baseline, skew, and vertex/edge sphere-vs-triangle guidance lanes plus baseline and skew capsule-vs-triangle guidance lanes, a visible triangle-vs-AABB closest-pair guidance lane, visible segment-vs-triangle and triangle-vs-triangle closest-pair guidance lanes, a visible triangle-vs-triangle overlap lane, visible sphere-to-triangle, segment-to-triangle, capsule-to-triangle, and triangle-to-triangle sweep lanes, and triangle closest-point guidance.
+Open `http://localhost:8080` to use the drag-enabled 2D and 3D labs. The canvas is organized into overlap, containment, raycast, and broadphase lessons, with a dimension switch for 2D/3D and a depth slider for the projected 3D handles so you can move the query actor or target geometry directly and watch the deterministic wasm readout update after every drag.
 
 The GitHub Pages deployment workflow lives in `.github/workflows/pages.yml`.
 

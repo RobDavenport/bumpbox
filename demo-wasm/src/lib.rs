@@ -1,6 +1,7 @@
 use bumpbox_core::{
     capsule3_contains_point, capsule3_overlaps_triangle3, capsule_contains_point,
-    circle_overlaps_aabb, closest_point_on_triangle3, closest_points_capsule3_triangle3,
+    circle_overlaps_aabb, circle_overlaps_capsule, circle_overlaps_convex_polygon,
+    circle_overlaps_oriented_box, closest_point_on_triangle3, closest_points_capsule3_triangle3,
     closest_points_segment3_triangle3, closest_points_sphere_triangle3,
     closest_points_triangle3_aabb3, closest_points_triangle3_triangle3,
     convex_polygon_contains_point, distance_squared_capsule3_triangle3,
@@ -177,6 +178,214 @@ struct Scene3DState {
     flags: Scene3DFlags,
 }
 
+#[derive(Clone, Debug, PartialEq, Serialize)]
+struct InteractiveScene2DFlags {
+    circle_hits_aabb: bool,
+    circle_hits_capsule: bool,
+    circle_hits_polygon: bool,
+    circle_hits_oriented_box: bool,
+    probe_in_aabb: bool,
+    probe_in_capsule: bool,
+    probe_in_polygon: bool,
+    probe_in_oriented_box: bool,
+    ray_hits_aabb: bool,
+    ray_hits_circle: bool,
+    ray_hits_capsule: bool,
+    ray_hits_polygon: bool,
+    ray_hits_oriented_box: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize)]
+struct InteractiveHandles2D {
+    probe: [f32; 2],
+    circle: [f32; 2],
+    aabb: [f32; 2],
+    capsule: [f32; 2],
+    oriented_box: [f32; 2],
+    polygon: [f32; 2],
+    sensor: [f32; 2],
+    aabb_ray: [f32; 2],
+    circle_ray: [f32; 2],
+    capsule_ray: [f32; 2],
+    polygon_ray: [f32; 2],
+    oriented_box_ray: [f32; 2],
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize)]
+struct InteractiveScene2DState {
+    probe: [f32; 2],
+    circle_center: [f32; 2],
+    circle_radius: f32,
+    aabb: Aabb2View,
+    sensor: Aabb2View,
+    capsule: Segment2View,
+    oriented_box: [[f32; 2]; 4],
+    polygon: Vec<[f32; 2]>,
+    aabb_ray: Ray2View,
+    circle_ray: Ray2View,
+    capsule_ray: Ray2View,
+    polygon_ray: Ray2View,
+    oriented_box_ray: Ray2View,
+    candidate_ids: Vec<u32>,
+    flags: InteractiveScene2DFlags,
+    handles: InteractiveHandles2D,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+struct InteractiveScene2D {
+    probe: Vec2,
+    circle_center: Vec2,
+    aabb_center: Vec2,
+    capsule_center: Vec2,
+    oriented_box_center: Vec2,
+    polygon_offset: Vec2,
+    sensor_center: Vec2,
+    aabb_ray_origin: Vec2,
+    circle_ray_origin: Vec2,
+    capsule_ray_origin: Vec2,
+    polygon_ray_origin: Vec2,
+    oriented_box_ray_origin: Vec2,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize)]
+struct InteractiveScene3DFlags {
+    sphere_hits_aabb: bool,
+    sphere_hits_capsule: bool,
+    sphere_hits_triangle: bool,
+    probe_in_aabb: bool,
+    probe_in_capsule: bool,
+    probe_on_triangle: bool,
+    ray_hits_aabb: bool,
+    ray_hits_sphere: bool,
+    ray_hits_capsule: bool,
+    ray_hits_triangle: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize)]
+struct InteractiveHandles3D {
+    probe: [f32; 3],
+    sphere: [f32; 3],
+    aabb: [f32; 3],
+    capsule: [f32; 3],
+    triangle: [f32; 3],
+    sensor: [f32; 3],
+    aabb_ray: [f32; 3],
+    sphere_ray: [f32; 3],
+    capsule_ray: [f32; 3],
+    triangle_ray: [f32; 3],
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize)]
+struct InteractiveScene3DState {
+    probe: [f32; 3],
+    sphere_center: [f32; 3],
+    sphere_radius: f32,
+    aabb: Aabb3View,
+    sensor: Aabb3View,
+    capsule: Segment3View,
+    triangle: [[f32; 3]; 3],
+    triangle_closest_point: [f32; 3],
+    aabb_ray: Ray3View,
+    sphere_ray: Ray3View,
+    capsule_ray: Ray3View,
+    triangle_ray: Ray3View,
+    candidate_ids: Vec<u32>,
+    flags: InteractiveScene3DFlags,
+    handles: InteractiveHandles3D,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+struct InteractiveScene3D {
+    probe: Vec3,
+    sphere_center: Vec3,
+    aabb_center: Vec3,
+    capsule_center: Vec3,
+    triangle_offset: Vec3,
+    sensor_center: Vec3,
+    aabb_ray_origin: Vec3,
+    sphere_ray_origin: Vec3,
+    capsule_ray_origin: Vec3,
+    triangle_ray_origin: Vec3,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum InteractiveHandle2D {
+    Probe = 0,
+    Circle = 1,
+    Aabb = 2,
+    Capsule = 3,
+    OrientedBox = 4,
+    Polygon = 5,
+    Sensor = 6,
+    AabbRay = 7,
+    CircleRay = 8,
+    CapsuleRay = 9,
+    PolygonRay = 10,
+    OrientedBoxRay = 11,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum InteractiveHandle3D {
+    Probe = 0,
+    Sphere = 1,
+    Aabb = 2,
+    Capsule = 3,
+    Triangle = 4,
+    Sensor = 5,
+    AabbRay = 6,
+    SphereRay = 7,
+    CapsuleRay = 8,
+    TriangleRay = 9,
+}
+
+impl InteractiveHandle2D {
+    fn from_raw(value: u32) -> Option<Self> {
+        match value {
+            0 => Some(Self::Probe),
+            1 => Some(Self::Circle),
+            2 => Some(Self::Aabb),
+            3 => Some(Self::Capsule),
+            4 => Some(Self::OrientedBox),
+            5 => Some(Self::Polygon),
+            6 => Some(Self::Sensor),
+            7 => Some(Self::AabbRay),
+            8 => Some(Self::CircleRay),
+            9 => Some(Self::CapsuleRay),
+            10 => Some(Self::PolygonRay),
+            11 => Some(Self::OrientedBoxRay),
+            _ => None,
+        }
+    }
+}
+
+impl InteractiveHandle3D {
+    fn from_raw(value: u32) -> Option<Self> {
+        match value {
+            0 => Some(Self::Probe),
+            1 => Some(Self::Sphere),
+            2 => Some(Self::Aabb),
+            3 => Some(Self::Capsule),
+            4 => Some(Self::Triangle),
+            5 => Some(Self::Sensor),
+            6 => Some(Self::AabbRay),
+            7 => Some(Self::SphereRay),
+            8 => Some(Self::CapsuleRay),
+            9 => Some(Self::TriangleRay),
+            _ => None,
+        }
+    }
+}
+
+#[wasm_bindgen]
+pub struct Sandbox2D {
+    scene: InteractiveScene2D,
+}
+
+#[wasm_bindgen]
+pub struct Sandbox3D {
+    scene: InteractiveScene3D,
+}
+
 #[wasm_bindgen]
 pub struct Demo2D {
     tick: u32,
@@ -236,6 +445,385 @@ impl Demo3D {
 impl Default for Demo3D {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[wasm_bindgen]
+impl Sandbox2D {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        Self { scene: InteractiveScene2D::default() }
+    }
+
+    pub fn reset(&mut self) {
+        self.scene = InteractiveScene2D::default();
+    }
+
+    pub fn move_handle(&mut self, handle: u32, x: f32, y: f32) {
+        if let Some(handle) = InteractiveHandle2D::from_raw(handle) {
+            self.scene.move_handle(handle, point_from_f32(x, y));
+        }
+    }
+
+    pub fn render_state(&self) -> String {
+        serde_json::to_string(&interactive_scene_2d_state(&self.scene))
+            .expect("interactive scene state should serialize")
+    }
+}
+
+impl Default for Sandbox2D {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[wasm_bindgen]
+impl Sandbox3D {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        Self { scene: InteractiveScene3D::default() }
+    }
+
+    pub fn reset(&mut self) {
+        self.scene = InteractiveScene3D::default();
+    }
+
+    pub fn move_handle(&mut self, handle: u32, x: f32, y: f32, z: f32) {
+        if let Some(handle) = InteractiveHandle3D::from_raw(handle) {
+            self.scene.move_handle(handle, point3_from_f32(x, y, z));
+        }
+    }
+
+    pub fn render_state(&self) -> String {
+        serde_json::to_string(&interactive_scene_3d_state(&self.scene))
+            .expect("interactive scene state should serialize")
+    }
+}
+
+impl Default for Sandbox3D {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Default for InteractiveScene2D {
+    fn default() -> Self {
+        Self {
+            probe: v2(43, 36),
+            circle_center: v2(17, 16),
+            aabb_center: v2(30, 21),
+            capsule_center: v2(18, 41),
+            oriented_box_center: v2(50, 22),
+            polygon_offset: Vec2::ZERO,
+            sensor_center: v2(17, 16),
+            aabb_ray_origin: v2(4, 18),
+            circle_ray_origin: v2(4, 16),
+            capsule_ray_origin: v2(4, 41),
+            polygon_ray_origin: v2(4, 44),
+            oriented_box_ray_origin: v2(4, 22),
+        }
+    }
+}
+
+impl Default for InteractiveScene3D {
+    fn default() -> Self {
+        Self {
+            probe: v3(24, 22, 20),
+            sphere_center: v3(16, 16, 16),
+            aabb_center: v3(26, 17, 17),
+            capsule_center: v3(20, 34, 18),
+            triangle_offset: Vec3::ZERO,
+            sensor_center: v3(16, 16, 16),
+            aabb_ray_origin: v3(4, 17, 17),
+            sphere_ray_origin: v3(4, 16, 16),
+            capsule_ray_origin: v3(4, 34, 18),
+            triangle_ray_origin: v3(4, 22, 20),
+        }
+    }
+}
+
+impl InteractiveScene2D {
+    fn move_handle(&mut self, handle: InteractiveHandle2D, target: Vec2) {
+        match handle {
+            InteractiveHandle2D::Probe => self.probe = clamp_free_point(target),
+            InteractiveHandle2D::Circle => {
+                self.circle_center = clamp_point_to_bounds(target, 6, 58, 6, 58)
+            }
+            InteractiveHandle2D::Aabb => {
+                self.aabb_center = clamp_point_to_bounds(target, 10, 54, 9, 55)
+            }
+            InteractiveHandle2D::Capsule => {
+                self.capsule_center = clamp_point_to_bounds(target, 15, 49, 10, 54)
+            }
+            InteractiveHandle2D::OrientedBox => {
+                self.oriented_box_center = clamp_point_to_bounds(target, 10, 54, 10, 54)
+            }
+            InteractiveHandle2D::Polygon => {
+                let delta = clamp_free_point(target) - self.polygon_handle();
+                self.polygon_offset = clamp_polygon_offset(self.polygon_offset + delta);
+            }
+            InteractiveHandle2D::Sensor => {
+                self.sensor_center = clamp_point_to_bounds(target, 8, 56, 8, 56)
+            }
+            InteractiveHandle2D::AabbRay => self.aabb_ray_origin = clamp_free_point(target),
+            InteractiveHandle2D::CircleRay => self.circle_ray_origin = clamp_free_point(target),
+            InteractiveHandle2D::CapsuleRay => self.capsule_ray_origin = clamp_free_point(target),
+            InteractiveHandle2D::PolygonRay => self.polygon_ray_origin = clamp_free_point(target),
+            InteractiveHandle2D::OrientedBoxRay => {
+                self.oriented_box_ray_origin = clamp_free_point(target);
+            }
+        }
+    }
+
+    fn aabb(&self) -> Aabb {
+        Aabb::try_new(
+            self.aabb_center - Vec2::new(Fx32::from_int(8), Fx32::from_int(7)),
+            self.aabb_center + Vec2::new(Fx32::from_int(8), Fx32::from_int(7)),
+        )
+        .expect("interactive aabb should remain valid")
+    }
+
+    fn circle(&self) -> Circle {
+        Circle::try_new(self.circle_center, Fx32::from_int(6)).expect("interactive circle")
+    }
+
+    fn capsule(&self) -> Capsule {
+        Capsule::try_new(
+            Segment::new(self.capsule_center + v2(-10, -5), self.capsule_center + v2(10, 5)),
+            Fx32::from_int(5),
+        )
+        .expect("interactive capsule")
+    }
+
+    fn oriented_box(&self) -> OrientedBox {
+        OrientedBox::try_new(self.oriented_box_center, v2(6, 4), v2(1, 1), v2(-1, 1))
+            .expect("interactive oriented box")
+    }
+
+    fn polygon(&self) -> ConvexPolygon<5> {
+        ConvexPolygon::try_new([
+            v2(40, 38) + self.polygon_offset,
+            v2(51, 34) + self.polygon_offset,
+            v2(58, 42) + self.polygon_offset,
+            v2(54, 54) + self.polygon_offset,
+            v2(42, 50) + self.polygon_offset,
+        ])
+        .expect("interactive polygon")
+    }
+
+    fn sensor(&self) -> Aabb {
+        inflate_aabb(self.sensor_center, Fx32::from_int(8))
+    }
+
+    fn polygon_handle(&self) -> Vec2 {
+        polygon_centroid(&self.polygon().points)
+    }
+}
+
+impl InteractiveScene3D {
+    fn move_handle(&mut self, handle: InteractiveHandle3D, target: Vec3) {
+        match handle {
+            InteractiveHandle3D::Probe => self.probe = clamp_free_point3(target),
+            InteractiveHandle3D::Sphere => {
+                self.sphere_center = clamp_point3_to_bounds(target, 5, 55, 5, 55, 5, 55)
+            }
+            InteractiveHandle3D::Aabb => {
+                self.aabb_center = clamp_point3_to_bounds(target, 8, 52, 7, 57, 7, 57)
+            }
+            InteractiveHandle3D::Capsule => {
+                self.capsule_center = clamp_point3_to_bounds(target, 14, 50, 4, 60, 12, 52)
+            }
+            InteractiveHandle3D::Triangle => {
+                let delta = clamp_free_point3(target) - self.triangle_handle();
+                self.triangle_offset = clamp_triangle_offset_3d(self.triangle_offset + delta);
+            }
+            InteractiveHandle3D::Sensor => {
+                self.sensor_center = clamp_point3_to_bounds(target, 7, 53, 7, 53, 7, 53)
+            }
+            InteractiveHandle3D::AabbRay => self.aabb_ray_origin = clamp_free_point3(target),
+            InteractiveHandle3D::SphereRay => self.sphere_ray_origin = clamp_free_point3(target),
+            InteractiveHandle3D::CapsuleRay => {
+                self.capsule_ray_origin = clamp_free_point3(target);
+            }
+            InteractiveHandle3D::TriangleRay => {
+                self.triangle_ray_origin = clamp_free_point3(target);
+            }
+        }
+    }
+
+    fn sphere(&self) -> Sphere {
+        Sphere::try_new(self.sphere_center, Fx32::from_int(5)).expect("interactive sphere")
+    }
+
+    fn aabb(&self) -> Aabb3 {
+        Aabb3::try_new(
+            self.aabb_center - Vec3::new(Fx32::from_int(8), Fx32::from_int(7), Fx32::from_int(7)),
+            self.aabb_center + Vec3::new(Fx32::from_int(8), Fx32::from_int(7), Fx32::from_int(7)),
+        )
+        .expect("interactive aabb3 should remain valid")
+    }
+
+    fn capsule(&self) -> Capsule3 {
+        Capsule3::try_new(
+            Segment3::new(self.capsule_center + v3(-10, 0, -8), self.capsule_center + v3(10, 0, 8)),
+            Fx32::from_int(4),
+        )
+        .expect("interactive capsule3")
+    }
+
+    fn triangle(&self) -> Triangle3 {
+        Triangle3::new(
+            v3(24, 16, 14) + self.triangle_offset,
+            v3(24, 28, 14) + self.triangle_offset,
+            v3(24, 22, 26) + self.triangle_offset,
+        )
+    }
+
+    fn sensor(&self) -> Aabb3 {
+        inflate_aabb3(self.sensor_center, Fx32::from_int(7))
+    }
+
+    fn triangle_handle(&self) -> Vec3 {
+        triangle_reference_point(&self.triangle())
+    }
+}
+
+fn interactive_scene_2d_state(scene: &InteractiveScene2D) -> InteractiveScene2DState {
+    let aabb = scene.aabb();
+    let circle = scene.circle();
+    let capsule = scene.capsule();
+    let oriented_box = scene.oriented_box();
+    let polygon = scene.polygon();
+    let sensor = scene.sensor();
+    let max_toi = Fx32::from_int(96);
+
+    let aabb_ray = Ray::new(scene.aabb_ray_origin, v2(1, 0));
+    let circle_ray = Ray::new(scene.circle_ray_origin, v2(1, 0));
+    let capsule_ray = Ray::new(scene.capsule_ray_origin, v2(1, 0));
+    let polygon_ray = Ray::new(scene.polygon_ray_origin, v2(1, 0));
+    let oriented_box_ray = Ray::new(scene.oriented_box_ray_origin, v2(1, 0));
+
+    let aabb_ray_hit = raycast_aabb(&aabb_ray, &aabb, max_toi);
+    let circle_ray_hit = raycast_circle(&circle_ray, &circle, max_toi);
+    let capsule_ray_hit = raycast_capsule(&capsule_ray, &capsule, max_toi);
+    let polygon_ray_hit = raycast_convex_polygon(&polygon_ray, &polygon, max_toi);
+    let oriented_box_ray_hit = raycast_oriented_box(&oriented_box_ray, &oriented_box, max_toi);
+    let candidate_ids = query_grid_2d(&aabb, &capsule, &oriented_box, &polygon, &sensor);
+
+    InteractiveScene2DState {
+        probe: vec2_to_arr(scene.probe),
+        circle_center: vec2_to_arr(circle.center),
+        circle_radius: fx_to_f32(circle.radius),
+        aabb: aabb2_view(&aabb),
+        sensor: aabb2_view(&sensor),
+        capsule: Segment2View {
+            start: vec2_to_arr(capsule.segment.start),
+            end: vec2_to_arr(capsule.segment.end),
+            radius: fx_to_f32(capsule.radius),
+        },
+        oriented_box: oriented_box_corners(&oriented_box),
+        polygon: polygon.points.iter().copied().map(vec2_to_arr).collect(),
+        aabb_ray: ray2_view(&aabb_ray, aabb_ray_hit),
+        circle_ray: ray2_view(&circle_ray, circle_ray_hit),
+        capsule_ray: ray2_view(&capsule_ray, capsule_ray_hit),
+        polygon_ray: ray2_view(&polygon_ray, polygon_ray_hit),
+        oriented_box_ray: ray2_view(&oriented_box_ray, oriented_box_ray_hit),
+        candidate_ids,
+        flags: InteractiveScene2DFlags {
+            circle_hits_aabb: circle_overlaps_aabb(&circle, &aabb),
+            circle_hits_capsule: circle_overlaps_capsule(&circle, &capsule),
+            circle_hits_polygon: circle_overlaps_convex_polygon(&circle, &polygon),
+            circle_hits_oriented_box: circle_overlaps_oriented_box(&circle, &oriented_box),
+            probe_in_aabb: aabb.contains_point(scene.probe),
+            probe_in_capsule: capsule_contains_point(&capsule, scene.probe),
+            probe_in_polygon: convex_polygon_contains_point(&polygon, scene.probe),
+            probe_in_oriented_box: oriented_box_contains_point(&oriented_box, scene.probe),
+            ray_hits_aabb: aabb_ray_hit.is_some(),
+            ray_hits_circle: circle_ray_hit.is_some(),
+            ray_hits_capsule: capsule_ray_hit.is_some(),
+            ray_hits_polygon: polygon_ray_hit.is_some(),
+            ray_hits_oriented_box: oriented_box_ray_hit.is_some(),
+        },
+        handles: InteractiveHandles2D {
+            probe: vec2_to_arr(scene.probe),
+            circle: vec2_to_arr(scene.circle_center),
+            aabb: vec2_to_arr(scene.aabb_center),
+            capsule: vec2_to_arr(scene.capsule_center),
+            oriented_box: vec2_to_arr(scene.oriented_box_center),
+            polygon: vec2_to_arr(scene.polygon_handle()),
+            sensor: vec2_to_arr(scene.sensor_center),
+            aabb_ray: vec2_to_arr(scene.aabb_ray_origin),
+            circle_ray: vec2_to_arr(scene.circle_ray_origin),
+            capsule_ray: vec2_to_arr(scene.capsule_ray_origin),
+            polygon_ray: vec2_to_arr(scene.polygon_ray_origin),
+            oriented_box_ray: vec2_to_arr(scene.oriented_box_ray_origin),
+        },
+    }
+}
+
+fn interactive_scene_3d_state(scene: &InteractiveScene3D) -> InteractiveScene3DState {
+    let sphere = scene.sphere();
+    let aabb = scene.aabb();
+    let capsule = scene.capsule();
+    let triangle = scene.triangle();
+    let sensor = scene.sensor();
+    let triangle_closest_point = closest_point_on_triangle3(&triangle, scene.probe);
+    let max_toi = Fx32::from_int(96);
+
+    let aabb_ray = Ray3::new(scene.aabb_ray_origin, v3(1, 0, 0));
+    let sphere_ray = Ray3::new(scene.sphere_ray_origin, v3(1, 0, 0));
+    let capsule_ray = Ray3::new(scene.capsule_ray_origin, v3(1, 0, 0));
+    let triangle_ray = Ray3::new(scene.triangle_ray_origin, v3(1, 0, 0));
+
+    let aabb_ray_hit = raycast_aabb3(&aabb_ray, &aabb, max_toi);
+    let sphere_ray_hit = raycast_sphere(&sphere_ray, &sphere, max_toi);
+    let capsule_ray_hit = raycast_capsule3(&capsule_ray, &capsule, max_toi);
+    let triangle_ray_hit = raycast_triangle3(&triangle_ray, &triangle, max_toi);
+    let candidate_ids = query_grid_3d(&aabb, &capsule, &triangle, &sensor);
+
+    InteractiveScene3DState {
+        probe: vec3_to_arr(scene.probe),
+        sphere_center: vec3_to_arr(sphere.center),
+        sphere_radius: fx_to_f32(sphere.radius),
+        aabb: aabb3_view(&aabb),
+        sensor: aabb3_view(&sensor),
+        capsule: Segment3View {
+            start: vec3_to_arr(capsule.segment.start),
+            end: vec3_to_arr(capsule.segment.end),
+            radius: fx_to_f32(capsule.radius),
+        },
+        triangle: triangle3_view(&triangle),
+        triangle_closest_point: vec3_to_arr(triangle_closest_point),
+        aabb_ray: ray3_view(&aabb_ray, aabb_ray_hit),
+        sphere_ray: ray3_view(&sphere_ray, sphere_ray_hit),
+        capsule_ray: ray3_view(&capsule_ray, capsule_ray_hit),
+        triangle_ray: ray3_view(&triangle_ray, triangle_ray_hit),
+        candidate_ids,
+        flags: InteractiveScene3DFlags {
+            sphere_hits_aabb: sphere_overlaps_aabb3(&sphere, &aabb),
+            sphere_hits_capsule: sphere_overlaps_capsule3(&sphere, &capsule),
+            sphere_hits_triangle: sphere_overlaps_triangle3(&sphere, &triangle),
+            probe_in_aabb: aabb.contains_point(scene.probe),
+            probe_in_capsule: capsule3_contains_point(&capsule, scene.probe),
+            probe_on_triangle: distance_squared_point_triangle3(&triangle, scene.probe)
+                == Fx32::ZERO,
+            ray_hits_aabb: aabb_ray_hit.is_some(),
+            ray_hits_sphere: sphere_ray_hit.is_some(),
+            ray_hits_capsule: capsule_ray_hit.is_some(),
+            ray_hits_triangle: triangle_ray_hit.is_some(),
+        },
+        handles: InteractiveHandles3D {
+            probe: vec3_to_arr(scene.probe),
+            sphere: vec3_to_arr(scene.sphere_center),
+            aabb: vec3_to_arr(scene.aabb_center),
+            capsule: vec3_to_arr(scene.capsule_center),
+            triangle: vec3_to_arr(scene.triangle_handle()),
+            sensor: vec3_to_arr(scene.sensor_center),
+            aabb_ray: vec3_to_arr(scene.aabb_ray_origin),
+            sphere_ray: vec3_to_arr(scene.sphere_ray_origin),
+            capsule_ray: vec3_to_arr(scene.capsule_ray_origin),
+            triangle_ray: vec3_to_arr(scene.triangle_ray_origin),
+        },
     }
 }
 
@@ -741,6 +1329,71 @@ fn ray3_view(ray: &Ray3, hit: Option<bumpbox_core::RayHit3>) -> Ray3View {
     }
 }
 
+fn point_from_f32(x: f32, y: f32) -> Vec2 {
+    Vec2::new(f32_to_fx32(x), f32_to_fx32(y))
+}
+
+fn point3_from_f32(x: f32, y: f32, z: f32) -> Vec3 {
+    Vec3::new(f32_to_fx32(x), f32_to_fx32(y), f32_to_fx32(z))
+}
+
+fn f32_to_fx32(value: f32) -> Fx32 {
+    let scaled = (value * SCALE_F32).round();
+    let raw = scaled.clamp(i32::MIN as f32, i32::MAX as f32) as i32;
+    Fx32::from_raw(raw)
+}
+
+fn clamp_free_point(point: Vec2) -> Vec2 {
+    clamp_point_to_bounds(point, 2, 62, 2, 62)
+}
+
+fn clamp_point_to_bounds(point: Vec2, min_x: i32, max_x: i32, min_y: i32, max_y: i32) -> Vec2 {
+    Vec2::new(
+        point.x.max(Fx32::from_int(min_x)).min(Fx32::from_int(max_x)),
+        point.y.max(Fx32::from_int(min_y)).min(Fx32::from_int(max_y)),
+    )
+}
+
+fn clamp_polygon_offset(offset: Vec2) -> Vec2 {
+    clamp_point_to_bounds(offset, -38, 4, -32, 8)
+}
+
+fn clamp_free_point3(point: Vec3) -> Vec3 {
+    clamp_point3_to_bounds(point, 2, 62, 2, 62, 2, 62)
+}
+
+fn clamp_point3_to_bounds(
+    point: Vec3,
+    min_x: i32,
+    max_x: i32,
+    min_y: i32,
+    max_y: i32,
+    min_z: i32,
+    max_z: i32,
+) -> Vec3 {
+    Vec3::new(
+        point.x.max(Fx32::from_int(min_x)).min(Fx32::from_int(max_x)),
+        point.y.max(Fx32::from_int(min_y)).min(Fx32::from_int(max_y)),
+        point.z.max(Fx32::from_int(min_z)).min(Fx32::from_int(max_z)),
+    )
+}
+
+fn clamp_triangle_offset_3d(offset: Vec3) -> Vec3 {
+    clamp_point3_to_bounds(offset, -12, 12, -12, 12, -12, 12)
+}
+
+fn polygon_centroid<const N: usize>(points: &[Vec2; N]) -> Vec2 {
+    let mut sum_x = 0i64;
+    let mut sum_y = 0i64;
+
+    for point in points {
+        sum_x += point.x.raw() as i64;
+        sum_y += point.y.raw() as i64;
+    }
+
+    Vec2::new(Fx32::from_raw((sum_x / N as i64) as i32), Fx32::from_raw((sum_y / N as i64) as i32))
+}
+
 fn v2(x: i32, y: i32) -> Vec2 {
     Vec2::new(Fx32::from_int(x), Fx32::from_int(y))
 }
@@ -774,7 +1427,62 @@ fn triangle_wave(tick: u32, period: u32, min: i32, max: i32) -> i32 {
 
 #[cfg(test)]
 mod tests {
-    use super::{scene_2d_state, scene_3d_state};
+    use super::{
+        interactive_scene_2d_state, interactive_scene_3d_state, point3_from_f32, point_from_f32,
+        scene_2d_state, scene_3d_state, InteractiveHandle2D, InteractiveHandle3D,
+        InteractiveScene2D, InteractiveScene3D,
+    };
+
+    #[test]
+    fn interactive_scene_2d_is_deterministic_and_sorted() {
+        let left = interactive_scene_2d_state(&InteractiveScene2D::default());
+        let right = interactive_scene_2d_state(&InteractiveScene2D::default());
+
+        assert_eq!(left, right);
+        assert!(left.candidate_ids.windows(2).all(|pair| pair[0] <= pair[1]));
+        assert!(left.flags.ray_hits_aabb);
+        assert!(left.flags.ray_hits_circle);
+        assert!(left.flags.ray_hits_capsule);
+    }
+
+    #[test]
+    fn interactive_scene_moves_probe_circle_and_sensor() {
+        let mut scene = InteractiveScene2D::default();
+        scene.move_handle(InteractiveHandle2D::Circle, point_from_f32(30.0, 21.0));
+        scene.move_handle(InteractiveHandle2D::Probe, point_from_f32(18.0, 41.0));
+        scene.move_handle(InteractiveHandle2D::Sensor, point_from_f32(2.0, 2.0));
+
+        let state = interactive_scene_2d_state(&scene);
+        assert!(state.flags.circle_hits_aabb);
+        assert!(state.flags.probe_in_capsule);
+        assert!(state.candidate_ids.is_empty());
+    }
+
+    #[test]
+    fn interactive_scene_3d_is_deterministic_and_sorted() {
+        let left = interactive_scene_3d_state(&InteractiveScene3D::default());
+        let right = interactive_scene_3d_state(&InteractiveScene3D::default());
+
+        assert_eq!(left, right);
+        assert!(left.candidate_ids.windows(2).all(|pair| pair[0] <= pair[1]));
+        assert!(left.flags.ray_hits_aabb);
+        assert!(left.flags.ray_hits_sphere);
+        assert!(left.flags.ray_hits_capsule);
+        assert!(left.flags.ray_hits_triangle);
+    }
+
+    #[test]
+    fn interactive_scene_3d_moves_probe_sphere_and_sensor() {
+        let mut scene = InteractiveScene3D::default();
+        scene.move_handle(InteractiveHandle3D::Sphere, point3_from_f32(24.0, 22.0, 20.0));
+        scene.move_handle(InteractiveHandle3D::Probe, point3_from_f32(20.0, 34.0, 18.0));
+        scene.move_handle(InteractiveHandle3D::Sensor, point3_from_f32(53.0, 53.0, 53.0));
+
+        let state = interactive_scene_3d_state(&scene);
+        assert!(state.flags.sphere_hits_triangle);
+        assert!(state.flags.probe_in_capsule);
+        assert!(state.candidate_ids.is_empty());
+    }
 
     #[test]
     fn scene_2d_snapshot_is_deterministic_and_sorted() {
